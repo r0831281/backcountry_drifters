@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Trips Loading</title>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .status { padding: 15px; margin: 10px 0; border-radius: 8px; }
+        .success { background: #d1fae5; border: 2px solid #10b981; color: #065f46; }
+        .error { background: #fee2e2; border: 2px solid #ef4444; color: #991b1b; }
+        .info { background: #dbeafe; border: 2px solid #3b82f6; color: #1e40af; }
+        pre { background: #f3f4f6; padding: 15px; border-radius: 8px; max-height: 500px; overflow: auto; }
+        button {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover { background: #059669; }
+    </style>
+</head>
+<body>
+    <h1>🎣 Test Trips Loading</h1>
+    <p>This page tests if trips can be loaded from Firestore (without authentication).</p>
+
+    <div id="status"></div>
+
+    <button onclick="testTripsLoad()">Test Loading Trips</button>
+    <button onclick="testWithAuth()">Test With Auth (Login First)</button>
+    <button onclick="clearOutput()">Clear</button>
+
+    <h2>Output:</h2>
+    <pre id="output">Click "Test Loading Trips" to start...</pre>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getFirestore, collection, query, where, orderBy, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB-2kEOxjE8ktM3LlxIikXXtH0L2impwqg",
+            authDomain: "backcountry-drifters.firebaseapp.com",
+            projectId: "backcountry-drifters",
+            storageBucket: "backcountry-drifters.appspot.com",
+            messagingSenderId: "538672257619",
+            appId: "1:538672257619:web:b10ffa90b48365385704a6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let output = document.getElementById('output');
+        let statusDiv = document.getElementById('status');
+        let currentUser = null;
+
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            output.textContent += `[${timestamp}] ${message}\n`;
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function setStatus(message, type) {
+            statusDiv.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+
+        window.clearOutput = function() {
+            output.textContent = '';
+            statusDiv.innerHTML = '';
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            if (user) {
+                log(`Authenticated as: ${user.email}`);
+            }
+        });
+
+        window.testTripsLoad = async function() {
+            try {
+                log('\n🎣 Testing trips loading (NO AUTH)...');
+                log('Building query: where isActive == true, orderBy createdAt desc');
+
+                const collectionRef = collection(db, 'trips');
+                const q = query(
+                    collectionRef,
+                    where('isActive', '==', true),
+                    orderBy('createdAt', 'desc')
+                );
+
+                log('Executing query...');
+                const snapshot = await getDocs(q);
+
+                log(`✅ Query succeeded! Found ${snapshot.size} trips`);
+
+                if (snapshot.size === 0) {
+                    log('\n⚠️  No trips found in database!');
+                    log('This means either:');
+                    log('  1. Database is empty (needs seeding)');
+                    log('  2. All trips have isActive: false');
+                    log('\nSOLUTION: Use the seed-data.html page to add trips');
+                    setStatus('⚠️ No trips in database. Please seed data first.', 'error');
+                } else {
+                    log('\nTrips found:');
+                    snapshot.forEach((doc) => {
+                        const data = doc.data();
+                        log(`  📍 ${data.title}`);
+                        log(`     Price: $${data.price / 100}`);
+                        log(`     Duration: ${data.duration}`);
+                        log(`     Active: ${data.isActive}`);
+                        log(`     ID: ${doc.id}\n`);
+                    });
+                    setStatus(`✅ Successfully loaded ${snapshot.size} trips!`, 'success');
+                }
+
+            } catch (error) {
+                log(`\n❌ Error: ${error.message}`);
+                log(`Error code: ${error.code}`);
+
+                if (error.code === 'permission-denied') {
+                    log('\n⚠️  Permission denied!');
+                    log('This could mean:');
+                    log('  1. Firestore rules are too restrictive');
+                    log('  2. Database not properly initialized');
+                    log('  3. Rules not deployed correctly');
+                    log('\nTrying to diagnose...');
+
+                    // Try reading without where clause
+                    try {
+                        log('\nTrying to read all trips (no filter)...');
+                        const allTripsSnapshot = await getDocs(collection(db, 'trips'));
+                        log(`Found ${allTripsSnapshot.size} total trips (any status)`);
+                    } catch (e2) {
+                        log(`Also failed: ${e2.message}`);
+                    }
+                }
+
+                setStatus(`❌ Failed to load trips: ${error.message}`, 'error');
+                console.error('Full error:', error);
+            }
+        };
+
+        window.testWithAuth = async function() {
+            if (!currentUser) {
+                log('❌ Not logged in! Please login at /login first');
+                setStatus('⚠️ Not logged in', 'error');
+                return;
+            }
+
+            try {
+                log('\n🔐 Testing with authentication...');
+                log(`User: ${currentUser.email}`);
+
+                const collectionRef = collection(db, 'trips');
+                const q = query(collectionRef, orderBy('createdAt', 'desc'));
+
+                log('Executing query (all trips, authenticated)...');
+                const snapshot = await getDocs(q);
+
+                log(`✅ Found ${snapshot.size} trips (authenticated query)`);
+
+                if (snapshot.size > 0) {
+                    snapshot.forEach((doc) => {
+                        const data = doc.data();
+                        log(`  📍 ${data.title} - Active: ${data.isActive}`);
+                    });
+                }
+
+                setStatus(`✅ Authenticated query successful: ${snapshot.size} trips`, 'success');
+
+            } catch (error) {
+                log(`\n❌ Error: ${error.message}`);
+                setStatus(`❌ Failed: ${error.message}`, 'error');
+            }
+        };
+    </script>
+</body>
+</html>

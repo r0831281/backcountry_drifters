@@ -1,0 +1,14 @@
+# robots.txt for Backcountry Drifters Fly Fishing
+User-agent: *
+Allow: /
+Allow: /bookings
+Allow: /about
+
+# Disallow admin areas
+Disallow: /login
+Disallow: /dashboard/
+Disallow: /seed-data.html
+Disallow: /test-*.html
+
+# Sitemap
+Sitemap: https://backcountrydrifters.com/sitemap.xml

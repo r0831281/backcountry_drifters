@@ -1,0 +1,61 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "LocalBusiness",
+      "@id": "https://backcountrydrifters.com/#business",
+      "name": "Backcountry Drifters Fly Fishing",
+      "image": "https://backcountrydrifters.com/og-image.jpg",
+      "description": "Premier guided fly fishing experiences in the Alberta foothills and Calgary area. Over 15 years of experience.",
+      "url": "https://backcountrydrifters.com",
+      "telephone": "+14035555374",
+      "email": "info@backcountrydrifters.com",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Calgary",
+        "addressLocality": "Calgary",
+        "addressRegion": "AB",
+        "addressCountry": "CA"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 51.0447,
+        "longitude": -114.0719
+      },
+      "areaServed": {
+        "@type": "Place",
+        "name": "Alberta Foothills and Calgary Area"
+      },
+      "priceRange": "$$",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "reviewCount": "500",
+        "bestRating": "5",
+        "worstRating": "1"
+      }
+    },
+    {
+      "@type": "Service",
+      "@id": "https://backcountrydrifters.com/#service",
+      "serviceType": "Guided Fly Fishing",
+      "provider": {
+        "@id": "https://backcountrydrifters.com/#business"
+      },
+      "areaServed": {
+        "@type": "Place",
+        "name": "Alberta, Canada"
+      }
+    },
+    {
+      "@type": "Person",
+      "@id": "https://backcountrydrifters.com/#guide",
+      "name": "Professional Guide",
+      "jobTitle": "Professional Fly Fishing Guide",
+      "worksFor": {
+        "@id": "https://backcountrydrifters.com/#business"
+      },
+      "knowsAbout": ["Fly Fishing", "Alberta Rivers", "Trout Fishing", "Bow River"]
+    }
+  ]
+}

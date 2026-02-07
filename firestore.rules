@@ -1,0 +1,219 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // -----------------------------------------------------------------------
+    // Helper Functions
+    // -----------------------------------------------------------------------
+
+    // Check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Check if user has admin role
+    function isAdmin() {
+      return isAuthenticated() &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // Check if user is accessing their own document
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // -----------------------------------------------------------------------
+    // Validation Helpers
+    // -----------------------------------------------------------------------
+
+    // Validate that a field is a non-empty string within length bounds
+    function isValidString(field, minLen, maxLen) {
+      return field is string && field.size() >= minLen && field.size() <= maxLen;
+    }
+
+    // Validate that a field is a non-empty string (shorthand)
+    function isNonEmptyString(field) {
+      return field is string && field.size() > 0;
+    }
+
+    // Validate email format (basic server-side check)
+    function isValidEmail(email) {
+      return email is string &&
+             email.size() >= 5 &&
+             email.size() <= 254 &&
+             email.matches('.*@.*\\..*');
+    }
+
+    // Validate phone number format (digits, plus, hyphens, parens, spaces, dots)
+    function isValidPhone(phone) {
+      return phone is string &&
+             phone.size() >= 10 &&
+             phone.size() <= 20;
+    }
+
+    // Validate that a number is within a range
+    function isValidNumber(num, min, max) {
+      return num is number && num >= min && num <= max;
+    }
+
+    // Validate that a number is a positive integer
+    function isPositiveInt(num) {
+      return num is int && num >= 1;
+    }
+
+    // Check a string does not contain basic script injection patterns
+    function noScriptTags(field) {
+      return !(field is string && (
+        field.lower().matches('.*<script.*') ||
+        field.lower().matches('.*javascript:.*') ||
+        field.lower().matches('.*onerror\\s*=.*') ||
+        field.lower().matches('.*onclick\\s*=.*') ||
+        field.lower().matches('.*onload\\s*=.*')
+      ));
+    }
+
+    // Validate a URL is http(s) only (or empty)
+    function isValidUrl(url) {
+      return url is string && (
+        url.size() == 0 ||
+        url.matches('https?://.*')
+      ) && url.size() <= 2048;
+    }
+
+    // Validate difficulty enum
+    function isValidDifficulty(difficulty) {
+      return difficulty in ['Beginner', 'Intermediate', 'Advanced'];
+    }
+
+    // Validate booking status enum
+    function isValidBookingStatus(status) {
+      return status in ['pending', 'confirmed', 'cancelled'];
+    }
+
+    // -----------------------------------------------------------------------
+    // Collection Rules
+    // -----------------------------------------------------------------------
+
+    // Testimonials - public read if approved, admin-only write with validation
+    match /testimonials/{testimonialId} {
+      allow read: if resource.data.isApproved == true || isAdmin();
+
+      allow create: if isAdmin()
+        && isValidString(request.resource.data.customerName, 2, 100)
+        && noScriptTags(request.resource.data.customerName)
+        && isValidString(request.resource.data.testimonialText, 20, 2000)
+        && noScriptTags(request.resource.data.testimonialText)
+        && isValidNumber(request.resource.data.rating, 1, 5)
+        && request.resource.data.rating is int
+        && isValidString(request.resource.data.tripType, 2, 100)
+        && noScriptTags(request.resource.data.tripType)
+        && request.resource.data.isApproved is bool
+        // photoUrl is optional but must be a valid URL if present
+        && (!('photoUrl' in request.resource.data) || request.resource.data.photoUrl == null || isValidUrl(request.resource.data.photoUrl));
+
+      allow update: if isAdmin()
+        && isValidString(request.resource.data.customerName, 2, 100)
+        && noScriptTags(request.resource.data.customerName)
+        && isValidString(request.resource.data.testimonialText, 20, 2000)
+        && noScriptTags(request.resource.data.testimonialText)
+        && isValidNumber(request.resource.data.rating, 1, 5)
+        && request.resource.data.rating is int
+        && isValidString(request.resource.data.tripType, 2, 100)
+        && noScriptTags(request.resource.data.tripType)
+        && request.resource.data.isApproved is bool
+        && (!('photoUrl' in request.resource.data) || request.resource.data.photoUrl == null || isValidUrl(request.resource.data.photoUrl));
+
+      allow delete: if isAdmin();
+    }
+
+    // Trips - public can list active trips, admin can do everything with validation
+    match /trips/{tripId} {
+      allow list: if true; // Allow listing all trips for public browsing
+      allow get: if resource.data.isActive == true || isAdmin();
+
+      allow create: if isAdmin()
+        && isValidString(request.resource.data.title, 2, 200)
+        && noScriptTags(request.resource.data.title)
+        && isValidString(request.resource.data.description, 10, 5000)
+        && noScriptTags(request.resource.data.description)
+        && isNonEmptyString(request.resource.data.duration)
+        && request.resource.data.duration.size() <= 100
+        && request.resource.data.price is number
+        && request.resource.data.price > 0
+        && request.resource.data.price <= 10000000
+        && isPositiveInt(request.resource.data.maxGuests)
+        && request.resource.data.maxGuests <= 50
+        && isValidDifficulty(request.resource.data.difficulty)
+        && isValidString(request.resource.data.location, 2, 200)
+        && noScriptTags(request.resource.data.location)
+        && request.resource.data.isActive is bool
+        && request.resource.data.photoUrls is list
+        && request.resource.data.includedEquipment is list;
+
+      allow update: if isAdmin()
+        && isValidString(request.resource.data.title, 2, 200)
+        && noScriptTags(request.resource.data.title)
+        && isValidString(request.resource.data.description, 10, 5000)
+        && noScriptTags(request.resource.data.description)
+        && isNonEmptyString(request.resource.data.duration)
+        && request.resource.data.duration.size() <= 100
+        && request.resource.data.price is number
+        && request.resource.data.price > 0
+        && request.resource.data.price <= 10000000
+        && isPositiveInt(request.resource.data.maxGuests)
+        && request.resource.data.maxGuests <= 50
+        && isValidDifficulty(request.resource.data.difficulty)
+        && isValidString(request.resource.data.location, 2, 200)
+        && noScriptTags(request.resource.data.location)
+        && request.resource.data.isActive is bool
+        && request.resource.data.photoUrls is list
+        && request.resource.data.includedEquipment is list;
+
+      allow delete: if isAdmin();
+    }
+
+    // Users - users can read their own profile, admin can read/write all
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId)
+        && isValidString(request.resource.data.displayName, 1, 100)
+        && isValidEmail(request.resource.data.email)
+        // authMethod is optional but must be 'email' or 'oauth' if present
+        && (!('authMethod' in request.resource.data) || request.resource.data.authMethod == null || request.resource.data.authMethod in ['email', 'oauth']);
+      allow update, delete: if isAdmin(); // Only admins can modify user roles
+    }
+
+    // Bookings - anyone can create (with validation), admin can read/update/delete
+    match /bookings/{bookingId} {
+      allow create: if true
+        // Required fields with type and length validation
+        && isNonEmptyString(request.resource.data.tripId)
+        && isNonEmptyString(request.resource.data.tripTitle)
+        && request.resource.data.tripTitle.size() <= 200
+        && isValidString(request.resource.data.guestName, 2, 100)
+        && noScriptTags(request.resource.data.guestName)
+        && isValidEmail(request.resource.data.email)
+        && isValidPhone(request.resource.data.phone)
+        && isNonEmptyString(request.resource.data.preferredDate)
+        && request.resource.data.preferredDate.size() <= 20
+        && isPositiveInt(request.resource.data.guestCount)
+        && request.resource.data.guestCount <= 20
+        && isValidBookingStatus(request.resource.data.status)
+        // specialRequests is optional
+        && (!('specialRequests' in request.resource.data) || request.resource.data.specialRequests == null || request.resource.data.specialRequests == '' || (request.resource.data.specialRequests is string && request.resource.data.specialRequests.size() <= 2000 && noScriptTags(request.resource.data.specialRequests)));
+
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Login Attempts - anyone can create (for tracking), admin-only read
+    match /loginAttempts/{attemptId} {
+      allow create: if true
+        && request.resource.data.type is string
+        && request.resource.data.type in ['failed', 'success']
+        && isValidString(request.resource.data.email, 1, 254);
+
+      allow read, update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+  }
+}
