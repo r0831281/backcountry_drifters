@@ -29,6 +29,7 @@ dist-ssr
 *.sw?
 .env.local
 *.env
+!.env.local.example
 
 # Firebase service account keys (never commit these!)
 firebase-admin-key.json
