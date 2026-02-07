@@ -293,14 +293,14 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
   return (
     <article
       className="
-        relative bg-white/90 backdrop-blur-sm rounded-2xl shadow-soft p-8
-        border border-gray-100 flex flex-col h-full mx-3
+        relative bg-white/90 backdrop-blur-sm rounded-2xl shadow-soft p-6 sm:p-8
+        border border-gray-100 flex flex-col h-full
         transition-shadow duration-300 hover:shadow-card-hover
       "
     >
       {/* Decorative quote icon */}
       <svg
-        className="absolute top-6 right-6 w-10 h-10 text-trout-gold/10"
+        className="absolute top-4 right-4 sm:top-6 sm:right-6 w-8 h-8 sm:w-10 sm:h-10 text-trout-gold/10"
         fill="currentColor"
         viewBox="0 0 24 24"
         aria-hidden="true"
@@ -330,14 +330,14 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
       </div>
 
       {/* Testimonial text */}
-      <blockquote className="flex-1 mb-6">
-        <p className="text-gray-600 leading-relaxed text-[0.95rem]">
+      <blockquote className="flex-1 mb-5 sm:mb-6">
+        <p className="text-gray-600 leading-relaxed text-sm sm:text-[0.95rem]">
           &ldquo;{testimonial.testimonialText}&rdquo;
         </p>
       </blockquote>
 
       {/* Customer info footer */}
-      <footer className="flex items-center gap-3 pt-5 border-t border-gray-100">
+      <footer className="flex items-center gap-3 pt-4 sm:pt-5 border-t border-gray-100">
         {showInitials ? (
           <div
             className="w-10 h-10 rounded-full bg-gradient-to-br from-forest-500 to-forest-700 flex items-center justify-center ring-2 ring-forest-100"

@@ -576,6 +576,8 @@ input[type="radio"]:focus-visible {
 .testimonial-carousel {
   position: relative;
   width: 100%;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 /* Viewport: contains overflow + arrow positioning context */
@@ -603,7 +605,18 @@ input[type="radio"]:focus-visible {
 /* Individual slide wrapper */
 .testimonial-carousel__slide {
   min-width: 0;
-  padding: 0 4px;
+  padding: 0 12px;
+}
+
+/* Mobile: reduce padding to prevent overflow */
+@media (max-width: 639px) {
+  .testimonial-carousel__slide {
+    padding: 0 8px;
+  }
+
+  .testimonial-carousel__overflow {
+    padding: 8px 4px 16px;
+  }
 }
 
 /* Ensure cards inside slides stretch to equal height */
