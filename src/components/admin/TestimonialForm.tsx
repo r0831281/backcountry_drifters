@@ -4,11 +4,12 @@ import { Modal, ModalFooter } from '../ui/Modal';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { Textarea } from '../ui/Textarea';
+import { ImageUpload } from '../ui/ImageUpload';
 import {
   validateTestimonialForm,
   type TestimonialValidationErrors,
 } from '../../lib/validation';
-import { sanitizeText, sanitizeUrl, warnIfSuspicious } from '../../lib/sanitization';
+import { sanitizeText, warnIfSuspicious } from '../../lib/sanitization';
 
 interface TestimonialFormProps {
   isOpen: boolean;
@@ -165,13 +166,19 @@ export function TestimonialForm({ isOpen, onClose, onSave, testimonial }: Testim
     // Sanitize all string fields before saving
     setSaving(true);
     try {
-      await onSave({
+      const dataToSave: any = {
         ...formData,
         customerName: sanitizeText(formData.customerName.trim()),
         testimonialText: sanitizeText(formData.testimonialText.trim()),
         tripType: sanitizeText(formData.tripType.trim()),
-        photoUrl: formData.photoUrl ? sanitizeUrl(formData.photoUrl.trim()) || undefined : undefined,
-      });
+      };
+
+      // Only include photoUrl if it has a value (Firestore doesn't allow undefined)
+      if (formData.photoUrl) {
+        dataToSave.photoUrl = formData.photoUrl;
+      }
+
+      await onSave(dataToSave);
       onClose();
     } catch (err) {
       setSaveError(
@@ -234,15 +241,14 @@ export function TestimonialForm({ isOpen, onClose, onSave, testimonial }: Testim
             maxLength={100}
           />
 
-          <Input
-            label="Photo URL"
-            placeholder="https://example.com/photo.jpg (optional)"
+          <ImageUpload
+            label="Customer Photo"
             value={formData.photoUrl || ''}
-            onChange={(e) => updateField('photoUrl', e.target.value)}
-            type="url"
+            onChange={(url) => updateField('photoUrl', url || '')}
+            storagePath="testimonials"
+            helperText="Optional. Upload a photo of the customer."
             error={errors.photoUrl}
-            helperText="Optional. Direct link to the customer's photo."
-            maxLength={2048}
+            maxSizeMB={5}
           />
 
           <div className="flex items-center gap-3">

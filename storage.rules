@@ -8,19 +8,35 @@ service firebase.storage {
 
     function isValidImage() {
       return request.resource.size < 5 * 1024 * 1024 &&
-             request.resource.contentType.matches('image/(jpeg|png|webp)');
+             request.resource.contentType.matches('image/(jpeg|png|webp|jpg)');
     }
 
-    // Testimonial photos - admin upload, public read
-    match /testimonials/{testimonialId}/{fileName} {
+    // Testimonial photos - authenticated users can upload, public read
+    match /testimonials/{fileName} {
       allow read: if true;
       allow write: if isAuthenticated() && isValidImage();
+      allow delete: if isAuthenticated();
     }
 
-    // Trip photos - admin upload, public read
-    match /trips/{tripId}/{fileName} {
+    // Trip photos - authenticated users can upload, public read
+    match /trips/{fileName} {
       allow read: if true;
       allow write: if isAuthenticated() && isValidImage();
+      allow delete: if isAuthenticated();
+    }
+
+    // Guides photos - authenticated users can upload, public read
+    match /guides/{fileName} {
+      allow read: if true;
+      allow write: if isAuthenticated() && isValidImage();
+      allow delete: if isAuthenticated();
+    }
+
+    // General photos - authenticated users can upload, public read
+    match /general/{fileName} {
+      allow read: if true;
+      allow write: if isAuthenticated() && isValidImage();
+      allow delete: if isAuthenticated();
     }
   }
 }

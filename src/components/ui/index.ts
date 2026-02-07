@@ -6,3 +6,5 @@ export { Modal, ModalFooter } from './Modal';
 export { Skeleton, SkeletonCard, SkeletonText } from './Skeleton';
 export { TestimonialCarousel } from './TestimonialCarousel';
 export { PrivacyNotice } from './PrivacyNotice';
+export { ImageUpload } from './ImageUpload';
+export { MultiImageUpload } from './MultiImageUpload';

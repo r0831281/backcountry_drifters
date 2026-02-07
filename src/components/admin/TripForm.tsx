@@ -4,11 +4,12 @@ import { Modal, ModalFooter } from '../ui/Modal';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { Textarea } from '../ui/Textarea';
+import { MultiImageUpload } from '../ui/MultiImageUpload';
 import {
   validateTripForm,
   type TripValidationErrors,
 } from '../../lib/validation';
-import { sanitizeText, sanitizeUrl, warnIfSuspicious } from '../../lib/sanitization';
+import { sanitizeText, warnIfSuspicious } from '../../lib/sanitization';
 
 interface TripFormProps {
   isOpen: boolean;
@@ -43,7 +44,6 @@ export function TripForm({ isOpen, onClose, onSave, trip }: TripFormProps) {
 
   // Separate string state for the multi-line equipment input and price-in-dollars
   const [equipmentText, setEquipmentText] = useState('');
-  const [photoUrlsText, setPhotoUrlsText] = useState('');
   const [priceDisplay, setPriceDisplay] = useState('');
 
   // Reset form when modal opens/closes or trip changes
@@ -63,12 +63,10 @@ export function TripForm({ isOpen, onClose, onSave, trip }: TripFormProps) {
           isActive: trip.isActive,
         });
         setEquipmentText(trip.includedEquipment.join('\n'));
-        setPhotoUrlsText(trip.photoUrls.join('\n'));
         setPriceDisplay((trip.price / 100).toFixed(2));
       } else {
         setFormData(EMPTY_FORM);
         setEquipmentText('');
-        setPhotoUrlsText('');
         setPriceDisplay('');
       }
       setErrors({});
@@ -80,6 +78,9 @@ export function TripForm({ isOpen, onClose, onSave, trip }: TripFormProps) {
     field: K,
     value: TripFormData[K],
   ) => {
+    if (field === 'photoUrls') {
+      console.log('[TripForm] updateField photoUrls called with:', value);
+    }
     setFormData((prev) => ({ ...prev, [field]: value }));
     // Clear error for this field when user changes it
     setErrors((prev) => {
@@ -111,15 +112,6 @@ export function TripForm({ isOpen, onClose, onSave, trip }: TripFormProps) {
     updateField('includedEquipment', items);
   }, [updateField]);
 
-  const handlePhotoUrlsChange = useCallback((text: string) => {
-    setPhotoUrlsText(text);
-    const urls = text
-      .split('\n')
-      .map((line) => line.trim())
-      .filter((line) => line.length > 0);
-    updateField('photoUrls', urls);
-  }, [updateField]);
-
   const validate = useCallback((): FormErrors => {
     return validateTripForm({
       title: formData.title,
@@ -149,19 +141,24 @@ export function TripForm({ isOpen, onClose, onSave, trip }: TripFormProps) {
     warnIfSuspicious('location', formData.location);
 
     // Sanitize all string fields before saving
+    console.log('[TripForm] Submitting with photoUrls:', formData.photoUrls);
     setSaving(true);
     try {
-      await onSave({
+      const dataToSave = {
         ...formData,
         title: sanitizeText(formData.title.trim()),
         description: sanitizeText(formData.description.trim()),
         duration: sanitizeText(formData.duration.trim()),
         location: sanitizeText(formData.location.trim()),
         includedEquipment: formData.includedEquipment.map((item) => sanitizeText(item)),
-        photoUrls: formData.photoUrls.map((url) => sanitizeUrl(url)).filter(Boolean),
-      });
+        // photoUrls come from MultiImageUpload - already clean Firebase Storage URLs
+        photoUrls: formData.photoUrls,
+      };
+      console.log('[TripForm] Calling onSave with data:', dataToSave);
+      await onSave(dataToSave);
       onClose();
     } catch (err) {
+      console.error('[TripForm] Save error:', err);
       setSaveError(
         err instanceof Error ? err.message : 'An unexpected error occurred. Please try again.'
       );
@@ -297,13 +294,14 @@ export function TripForm({ isOpen, onClose, onSave, trip }: TripFormProps) {
             }
           />
 
-          <Textarea
-            label="Photo URLs"
-            placeholder="Enter one URL per line (optional)&#10;https://example.com/photo1.jpg&#10;https://example.com/photo2.jpg"
-            value={photoUrlsText}
-            onChange={(e) => handlePhotoUrlsChange(e.target.value)}
-            rows={3}
-            helperText="Optional. One URL per line. Firebase Storage upload coming soon."
+          <MultiImageUpload
+            label="Trip Photos"
+            value={formData.photoUrls}
+            onChange={(urls) => updateField('photoUrls', urls)}
+            storagePath="trips"
+            helperText="Upload photos of the trip. First image will be the main photo."
+            maxImages={10}
+            maxSizeMB={5}
           />
 
           <div className="flex items-center gap-3">

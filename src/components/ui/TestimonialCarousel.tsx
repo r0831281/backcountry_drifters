@@ -285,6 +285,11 @@ export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) 
 /* Extracted for reuse; matches the existing premium card design        */
 /* ------------------------------------------------------------------ */
 function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
+  const [imageError, setImageError] = useState(false);
+
+  // Show initials if no photo URL or if image fails to load
+  const showInitials = !testimonial.photoUrl || imageError;
+
   return (
     <article
       className="
@@ -333,14 +338,7 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
 
       {/* Customer info footer */}
       <footer className="flex items-center gap-3 pt-5 border-t border-gray-100">
-        {testimonial.photoUrl ? (
-          <img
-            src={testimonial.photoUrl}
-            alt=""
-            className="w-10 h-10 rounded-full object-cover ring-2 ring-forest-100"
-            loading="lazy"
-          />
-        ) : (
+        {showInitials ? (
           <div
             className="w-10 h-10 rounded-full bg-gradient-to-br from-forest-500 to-forest-700 flex items-center justify-center ring-2 ring-forest-100"
             aria-hidden="true"
@@ -354,6 +352,14 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
                 .toUpperCase()}
             </span>
           </div>
+        ) : (
+          <img
+            src={testimonial.photoUrl}
+            alt=""
+            className="w-10 h-10 rounded-full object-cover ring-2 ring-forest-100 bg-white"
+            loading="lazy"
+            onError={() => setImageError(true)}
+          />
         )}
         <div>
           <cite className="not-italic text-sm font-semibold text-forest-700 block">

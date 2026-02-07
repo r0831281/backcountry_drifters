@@ -29,6 +29,19 @@ export const COLLECTIONS = {
 // Generic Firestore helper functions
 
 /**
+ * Remove undefined values from an object (Firestore doesn't accept undefined)
+ */
+function removeUndefinedValues<T extends Record<string, any>>(obj: T): Partial<T> {
+  const result: any = {};
+  for (const [key, value] of Object.entries(obj)) {
+    if (value !== undefined) {
+      result[key] = value;
+    }
+  }
+  return result;
+}
+
+/**
  * Get a single document by ID
  */
 export async function getDocument<T = DocumentData>(
@@ -69,8 +82,10 @@ export async function createDocument<T = DocumentData>(
   data: WithFieldValue<T>
 ): Promise<string> {
   const collectionRef = collection(db, collectionName);
+  // Remove undefined values before sending to Firestore
+  const cleanData = removeUndefinedValues(data as Record<string, any>);
   const docRef = await addDoc(collectionRef, {
-    ...(data as object),
+    ...cleanData,
     createdAt: serverTimestamp(),
   });
   return docRef.id;
@@ -85,8 +100,10 @@ export async function updateDocument<T = Partial<DocumentData>>(
   data: WithFieldValue<T>
 ): Promise<void> {
   const docRef = doc(db, collectionName, docId);
+  // Remove undefined values before sending to Firestore
+  const cleanData = removeUndefinedValues(data as Record<string, any>);
   await updateDoc(docRef, {
-    ...(data as object),
+    ...cleanData,
     updatedAt: serverTimestamp(),
   });
 }
