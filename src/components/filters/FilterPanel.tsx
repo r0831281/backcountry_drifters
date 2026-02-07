@@ -160,15 +160,18 @@ export function FilterPanel({
                 onChange={() => handleDifficultyToggle('All levels', true)}
                 id="checkbox-all-levels"
               />
-              {availableOptions.difficulties.map((option) => (
-                <CheckboxFilter
-                  key={option.value}
-                  label={option.value}
-                  count={option.count}
-                  checked={filters.difficulty.includes(option.value)}
-                  onChange={(checked) => handleDifficultyToggle(option.value, checked)}
-                />
-              ))}
+              {/* Filter out "All levels" from the loop to avoid duplicates */}
+              {availableOptions.difficulties
+                .filter((option) => option.value.toLowerCase() !== 'all levels')
+                .map((option) => (
+                  <CheckboxFilter
+                    key={option.value}
+                    label={option.value}
+                    count={option.count}
+                    checked={filters.difficulty.includes(option.value)}
+                    onChange={(checked) => handleDifficultyToggle(option.value, checked)}
+                  />
+                ))}
             </div>
           </CollapsibleSection>
         )}

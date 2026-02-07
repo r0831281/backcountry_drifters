@@ -72,15 +72,22 @@ export function Header() {
           {/* Logo */}
           <Link
             to="/"
-            className="flex items-center gap-2 group"
+            className="flex items-center gap-3 group"
             aria-label="Backcountry Drifters Fly Fishing - Home"
           >
-            <span className="text-2xl font-bold text-gradient-forest transition-opacity duration-200 group-hover:opacity-80">
-              Backcountry Drifters
-            </span>
-            <span className="text-sm text-gray-500 hidden sm:inline font-medium">
-              Fly Fishing
-            </span>
+            {/* <img
+              src="/logo.png"
+              alt="Backcountry Drifters"
+              className="h-10 md:h-12 w-auto"
+            /> */}
+            <div className="flex flex-col">
+              <span className="text-xl font-bold text-gradient-forest transition-opacity duration-200 group-hover:opacity-80">
+                Backcountry Drifters
+              </span>
+              <span className="text-xs text-gray-500 font-medium">
+                Fly Fishing
+              </span>
+            </div>
           </Link>
 
           {/* Desktop Navigation */}

@@ -74,9 +74,9 @@ export function Home() {
               Premier Fly Fishing Guides in Alberta
             </div>
 
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-[1.1] animate-slide-up">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-[1.1] animate-slide-up text-white" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.3), 0 4px 8px rgba(0,0,0,0.2)' }}>
               Experience World-Class
-              <span className="block text-trout-gold mt-2">Fly Fishing in Alberta</span>
+              <span className="block text-trout-gold mt-2" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.4), 0 4px 8px rgba(0,0,0,0.3)' }}>Fly Fishing in Alberta</span>
             </h1>
 
             <p className="text-lg md:text-xl text-forest-100/90 mb-10 max-w-2xl leading-relaxed animate-fade-in" style={{ animationDelay: '0.2s' }}>
@@ -280,7 +280,7 @@ export function Home() {
             ${ctaReveal.isVisible ? 'is-visible' : ''}
           `}
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">
             Ready for Your Next Adventure?
           </h2>
           <p className="text-lg text-forest-100/90 mb-10 max-w-2xl mx-auto leading-relaxed">
