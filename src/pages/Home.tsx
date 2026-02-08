@@ -116,9 +116,12 @@ export function Home() {
               Premier Fly Fishing Guides in Alberta
             </div>
 
-            <h1 className="hero-critical__title text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-[1.1] animate-slide-up text-white" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.3), 0 4px 8px rgba(0,0,0,0.2)' }}>
-              Alberta Guided Fly Fishing Adventures
-              <span className="block text-trout-gold mt-2" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.4), 0 4px 8px rgba(0,0,0,0.3)' }}>Drift boat & walk-and-wade trips on Bow, Red Deer, and foothill rivers</span>
+
+            <h1 className="hero-critical__title text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-[1.1] animate-slide-up text-forest-50" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.35), 0 6px 18px rgba(0,0,0,0.35)' }}>
+              <span className="inline-block px-4 py-2 rounded-[2.25rem] bg-gradient-to-r from-forest-950/60 via-forest-900/25 to-transparent text-forest-50/95 shadow-[0_20px_45px_rgba(0,0,0,0.35)] backdrop-blur-sm">
+                Alberta Guided Fly Fishing Adventures
+              </span>
+              <span className="block text-trout-gold/90 mt-2" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.35), 0 4px 8px rgba(0,0,0,0.25)' }}>Drift & walk-and-wade trips on Bow, Red Deer, and foothill rivers</span>
             </h1>
 
             <p className="hero-critical__subtitle text-lg md:text-xl text-forest-100/90 mb-10 max-w-2xl leading-relaxed animate-fade-in" style={{ animationDelay: '0.2s' }}>

@@ -7,7 +7,7 @@ export function Footer() {
     <footer className="bg-forest-800 text-white relative overflow-hidden mt-16 md:mt-20">
 
       {/* Gold accent line at top */}
-      <div className="divider-gold" aria-hidden="true" />
+      <div className="divider-gold mb-3" aria-hidden="true" />
 
       <div className="container-custom py-16 relative">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
