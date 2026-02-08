@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/refs */
+import { Link } from 'react-router-dom';
 import { PageContainer, PageHeader } from '../components/layout';
-import { Card, CardContent } from '../components/ui';
+import { Card, CardContent, Button } from '../components/ui';
 import { useScrollReveal, useStaggerReveal } from '../hooks';
 
 /* ------------------------------------------------------------------ */
@@ -72,6 +73,40 @@ const certifications = [
 ];
 
 /* ------------------------------------------------------------------ */
+/* Trip specialties for topical depth                                 */
+/* ------------------------------------------------------------------ */
+const tripSpecialties = [
+  {
+    title: 'Bow River Drift Boat Trips',
+    summary:
+      'Iconic full-day floats covering 15-25 kilometers of blue-ribbon water minutes from downtown Calgary with steady brown and rainbow trout action.',
+    location: 'Bow River, Calgary and Southern Alberta',
+    season: 'Prime season April-October',
+  },
+  {
+    title: 'Red Deer River Walk-and-Wade',
+    summary:
+      'Sight-fishing missions through the Red Deer badlands targeting aggressive browns with terrestrials, streamers, and technical dry flies.',
+    location: 'Red Deer River corridor',
+    season: 'Best mid-June through September',
+  },
+  {
+    title: 'Foothills Freestone Adventures',
+    summary:
+      'Custom itineraries on the Highwood, Oldman, and Livingstone Rivers that blend alpine hikes with patient instruction for dry fly and Euro nymph tactics.',
+    location: 'Southern Alberta foothills',
+    season: 'Late May through early October',
+  },
+  {
+    title: 'Multi-Day Rockies Expeditions',
+    summary:
+      'Fully planned Alberta fly fishing packages combining drift boat days, walk-and-wade exploration, camp catering, and conservation-focused education.',
+    location: 'Central and Southern Alberta service area',
+    season: 'Available May-October',
+  },
+];
+
+/* ------------------------------------------------------------------ */
 /* About Page Component                                                */
 /* ------------------------------------------------------------------ */
 export function About() {
@@ -84,7 +119,7 @@ export function About() {
     <PageContainer>
       <PageHeader
         title="About Backcountry Drifters Fly Fishing"
-        subtitle="Meet your guide and learn about our passion for fly fishing"
+        subtitle="Licensed Alberta fly fishing guides delivering Bow River drift trips, Red Deer River walk-and-wade days, and immersive instruction."
       />
 
       {/* ============================================================
@@ -118,35 +153,106 @@ export function About() {
           >
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-forest-50 text-sm text-forest-600 font-medium mb-4">
               <span className="w-1.5 h-1.5 rounded-full bg-trout-gold" aria-hidden="true" />
-              Your Expert Guide
+              Licensed Alberta Guide Team
             </div>
             <h2 className="text-3xl font-bold text-forest-800 mb-5">
-              Meet Our Guides
+              Meet Our Alberta Fly Fishing Guides
             </h2>
             <div className="space-y-4 text-gray-600 leading-relaxed">
               <p>
-                With over 15 years of experience guiding fly fishing trips in the
-                Alberta foothills and Calgary area, the Backcountry Drifters team brings
-                an unmatched combination of local knowledge, teaching expertise, and
-                passion for the sport.
+                With over 15 years of professional guiding across the Bow River, Red Deer River,
+                and southern Alberta foothills, Backcountry Drifters delivers the region's most
+                intentional guided fly fishing experiences. Our small team is fully licensed,
+                insured, and singularly focused on creating safe, conservation-forward adventures.
               </p>
               <p>
-                Born and raised in Calgary, our guides developed their love for fly
-                fishing at an early age on the pristine waters of the Bow River. Their
-                deep understanding of Alberta's rivers, seasonal patterns, and trout
-                behavior ensures that every trip is not just a fishing expedition, but
-                an unforgettable learning experience.
+                Born and raised in Calgary, our guides refined their craft rowing the Bow River,
+                stalking the Red Deer badlands, and hiking into the Highwood and Oldman systems.
+                That on-the-water time translates into precise reads on hatches, flows, and trout
+                behavior so every outing doubles as an immersive classroom.
               </p>
               <p>
-                Whether you're a complete beginner looking to learn the basics or
-                an experienced angler seeking to explore new waters, our guides' patient
-                teaching style and commitment to conservation make Backcountry Drifters
-                the ideal choice for your next adventure.
+                Whether you are casting for the first time or refining advanced streamer
+                presentations, our coaches pair patient instruction with premium gear,
+                seamless logistics, and an unwavering commitment to Alberta fisheries.
+                We are here to design the guided trip that matches your goals.
               </p>
             </div>
             {/* Gold divider */}
             <div className="mt-6 w-12 h-0.5 bg-trout-gold rounded-full" aria-hidden="true" />
           </div>
+        </div>
+      </section>
+
+      {/* ============================================================
+          TRIP SPECIALTIES SECTION
+          Service-focused cards with schema cues
+          ============================================================ */}
+      <section
+        className="mb-20"
+        aria-labelledby="trip-specialties-heading"
+        itemScope
+        itemType="https://schema.org/LocalBusiness"
+      >
+        <meta itemProp="name" content="Backcountry Drifters - Alberta Fly Fishing Guides" />
+        <meta itemProp="url" content="https://backcountry-drifters.com" />
+        <meta itemProp="areaServed" content="Alberta, Canada" />
+        <div className="text-center mb-10">
+          <h2 id="trip-specialties-heading" className="text-3xl font-bold text-forest-800 mb-3">
+            Guided Trip Specialties
+          </h2>
+          <p className="text-gray-600 max-w-3xl mx-auto">
+            Explore the Alberta fly fishing packages we run most often. Each service below can be
+            customized for solo anglers, small groups, or corporate retreats, and includes premium
+            rods, reels, flies, river lunch, transportation on the water, and conservation education.
+          </p>
+          <div className="mx-auto mt-5 w-12 h-0.5 bg-trout-gold rounded-full" aria-hidden="true" />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+          {tripSpecialties.map((specialty) => (
+            <Card key={specialty.title} hover className="h-full">
+              <CardContent>
+                <article itemScope itemType="https://schema.org/Service" className="flex flex-col h-full">
+                  <meta itemProp="serviceType" content={specialty.title} />
+                  <h3 className="text-xl font-semibold text-forest-800 mb-2" itemProp="name">
+                    {specialty.title}
+                  </h3>
+                  <p className="text-gray-500 leading-relaxed mb-4" itemProp="description">
+                    {specialty.summary}
+                  </p>
+                  <dl className="text-sm text-gray-600 space-y-1 mb-4">
+                    <div className="flex gap-2">
+                      <dt className="font-semibold text-forest-700">Location:</dt>
+                      <dd itemProp="areaServed">{specialty.location}</dd>
+                    </div>
+                    <div className="flex gap-2">
+                      <dt className="font-semibold text-forest-700">Season:</dt>
+                      <dd>{specialty.season}</dd>
+                    </div>
+                  </dl>
+                  <Link
+                    to="/bookings"
+                    itemProp="url"
+                    className="inline-flex items-center gap-2 text-forest-700 font-semibold hover:text-forest-900 transition-colors mt-auto"
+                  >
+                    Check availability
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14m-4-4l4 4-4 4" />
+                    </svg>
+                  </Link>
+                </article>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        <div className="text-center mt-10">
+          <Link to="/bookings">
+            <Button variant="primary" size="lg">
+              Book an Alberta Fly Fishing Guide
+            </Button>
+          </Link>
         </div>
       </section>
 
