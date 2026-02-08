@@ -606,6 +606,8 @@ input[type="radio"]:focus-visible {
 .testimonial-carousel__slide {
   min-width: 0;
   padding: 0 12px;
+  box-sizing: border-box;
+  max-width: 100%;
 }
 
 /* Mobile: compact layout for better card proportions */
@@ -615,7 +617,12 @@ input[type="radio"]:focus-visible {
   }
 
   .testimonial-carousel__overflow {
-    padding: 4px 4px 10px;
+    padding: 10px 12px 18px;
+  }
+
+  .testimonial-carousel__slide > article {
+    max-width: min(90vw, 360px);
+    margin: 0 auto;
   }
 
   .testimonial-carousel__dots {
