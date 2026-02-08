@@ -19,12 +19,14 @@ export function PrivacyNotice() {
     localStorage.setItem('privacy_consent', 'true');
     localStorage.setItem('privacy_consent_date', new Date().toISOString());
     setIsVisible(false);
+    window.dispatchEvent(new Event('privacy_consent_changed'));
   };
 
   const handleDecline = () => {
     localStorage.setItem('privacy_consent', 'false');
     localStorage.setItem('privacy_consent_date', new Date().toISOString());
     setIsVisible(false);
+    window.dispatchEvent(new Event('privacy_consent_changed'));
   };
 
   if (!isVisible) return null;

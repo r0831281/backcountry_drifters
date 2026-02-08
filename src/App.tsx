@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { Header, Footer, ProtectedRoute } from './components/layout';
 import { PrivacyNotice } from './components/ui';
+import { AnalyticsTracker } from './components/AnalyticsTracker';
 import { Home } from './pages/Home';
 
 const About = lazy(() => import('./pages/About').then((module) => ({ default: module.About })));
@@ -19,26 +20,10 @@ function PageFallback() {
 }
 
 function App() {
-  useEffect(() => {
-    const consent = localStorage.getItem('privacy_consent');
-    if (consent !== 'true') return;
-
-    const initAnalytics = async () => {
-      try {
-        const { trackSession, trackPageView } = await import('./lib/analytics');
-        await trackSession();
-        trackPageView('App Load');
-      } catch (error) {
-        console.warn('Analytics failed to initialize', error);
-      }
-    };
-
-    void initAnalytics();
-  }, []);
-
   return (
     <BrowserRouter>
       <AuthProvider>
+        <AnalyticsTracker />
         <div className="flex flex-col min-h-screen">
           <Header />
           <div className="flex-grow">
