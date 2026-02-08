@@ -293,14 +293,15 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
   return (
     <article
       className="
-        relative bg-white/90 backdrop-blur-sm rounded-2xl shadow-soft p-6 sm:p-8
+        relative bg-white/90 backdrop-blur-sm rounded-2xl shadow-soft
+        p-4 sm:p-6 md:p-8
         border border-gray-100 flex flex-col h-full
         transition-shadow duration-300 hover:shadow-card-hover
       "
     >
-      {/* Decorative quote icon */}
+      {/* Decorative quote icon -- smaller on mobile to save space */}
       <svg
-        className="absolute top-4 right-4 sm:top-6 sm:right-6 w-8 h-8 sm:w-10 sm:h-10 text-trout-gold/10"
+        className="absolute top-3 right-3 sm:top-6 sm:right-6 w-6 h-6 sm:w-10 sm:h-10 text-trout-gold/10"
         fill="currentColor"
         viewBox="0 0 24 24"
         aria-hidden="true"
@@ -308,16 +309,16 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
         <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151C7.563 6.068 6 8.789 6 11h4v10H0z" />
       </svg>
 
-      {/* Star rating */}
+      {/* Star rating -- compact on mobile */}
       <div
-        className="flex items-center gap-0.5 mb-5"
+        className="flex items-center gap-0.5 mb-3 sm:mb-5"
         role="img"
         aria-label={`Rated ${testimonial.rating} out of 5 stars`}
       >
         {[1, 2, 3, 4, 5].map((star) => (
           <svg
             key={star}
-            className={`w-5 h-5 ${
+            className={`w-4 h-4 sm:w-5 sm:h-5 ${
               star <= testimonial.rating ? 'text-trout-gold' : 'text-gray-200'
             }`}
             fill="currentColor"
@@ -329,21 +330,21 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
         ))}
       </div>
 
-      {/* Testimonial text */}
-      <blockquote className="flex-1 mb-5 sm:mb-6">
-        <p className="text-gray-600 leading-relaxed text-sm sm:text-[0.95rem]">
+      {/* Testimonial text -- tighter line-height on mobile for compact cards */}
+      <blockquote className="flex-1 mb-3 sm:mb-6">
+        <p className="text-gray-600 leading-snug sm:leading-relaxed text-[0.8125rem] sm:text-[0.95rem]">
           &ldquo;{testimonial.testimonialText}&rdquo;
         </p>
       </blockquote>
 
-      {/* Customer info footer */}
-      <footer className="flex items-center gap-3 pt-4 sm:pt-5 border-t border-gray-100">
+      {/* Customer info footer -- tighter spacing on mobile */}
+      <footer className="flex items-center gap-2.5 sm:gap-3 pt-3 sm:pt-5 border-t border-gray-100">
         {showInitials ? (
           <div
-            className="w-10 h-10 rounded-full bg-gradient-to-br from-forest-500 to-forest-700 flex items-center justify-center ring-2 ring-forest-100"
+            className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-forest-500 to-forest-700 flex items-center justify-center ring-2 ring-forest-100 flex-shrink-0"
             aria-hidden="true"
           >
-            <span className="text-sm font-semibold text-white">
+            <span className="text-xs sm:text-sm font-semibold text-white">
               {testimonial.customerName
                 .split(' ')
                 .map((n) => n[0])
@@ -356,16 +357,16 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
           <img
             src={testimonial.photoUrl}
             alt=""
-            className="w-10 h-10 rounded-full object-cover ring-2 ring-forest-100 bg-white"
+            className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover ring-2 ring-forest-100 bg-white flex-shrink-0"
             loading="lazy"
             onError={() => setImageError(true)}
           />
         )}
-        <div>
-          <cite className="not-italic text-sm font-semibold text-forest-700 block">
+        <div className="min-w-0">
+          <cite className="not-italic text-xs sm:text-sm font-semibold text-forest-700 block truncate">
             {testimonial.customerName}
           </cite>
-          <span className="text-xs font-medium text-trout-gold">
+          <span className="text-[0.6875rem] sm:text-xs font-medium text-trout-gold">
             {testimonial.tripType}
           </span>
         </div>

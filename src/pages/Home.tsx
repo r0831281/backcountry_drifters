@@ -202,21 +202,21 @@ export function Home() {
           {/* Section header */}
           <div
             className={`
-              text-center mb-14
+              text-center mb-8 sm:mb-14
               scroll-reveal
               ${testimonialsReveal.isVisible ? 'is-visible' : ''}
             `}
           >
             <h2
               id="testimonials-heading"
-              className="text-3xl md:text-4xl font-bold text-forest-800 mb-4"
+              className="text-2xl sm:text-3xl md:text-4xl font-bold text-forest-800 mb-3 sm:mb-4"
             >
               What Our Clients Say
             </h2>
-            <p className="text-gray-500 text-lg max-w-2xl mx-auto">
+            <p className="text-gray-500 text-base sm:text-lg max-w-2xl mx-auto">
               Read testimonials from anglers who have experienced Backcountry Drifters.
             </p>
-            <div className="mt-5 mx-auto w-12 h-0.5 bg-trout-gold rounded-full" aria-hidden="true" />
+            <div className="mt-4 sm:mt-5 mx-auto w-12 h-0.5 bg-trout-gold rounded-full" aria-hidden="true" />
           </div>
 
           {/* Loading skeleton state */}

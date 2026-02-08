@@ -608,14 +608,28 @@ input[type="radio"]:focus-visible {
   padding: 0 12px;
 }
 
-/* Mobile: reduce padding to prevent overflow */
+/* Mobile: compact layout for better card proportions */
 @media (max-width: 639px) {
   .testimonial-carousel__slide {
-    padding: 0 8px;
+    padding: 0 6px;
   }
 
   .testimonial-carousel__overflow {
-    padding: 8px 4px 16px;
+    padding: 4px 4px 10px;
+  }
+
+  .testimonial-carousel__dots {
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .testimonial-carousel__dot {
+    width: 8px;
+    height: 8px;
+  }
+
+  .testimonial-carousel__dot--active {
+    transform: scale(1.25);
   }
 }
 
@@ -700,11 +714,20 @@ input[type="radio"]:focus-visible {
   border: none;
   padding: 0;
   cursor: pointer;
+  /* Expand touch target to 44px minimum without affecting visual layout */
+  position: relative;
   background: rgb(45 95 77 / 0.18);
   transition:
     background-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
     transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
     box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Invisible touch-target expander -- ensures WCAG 2.5.8 minimum 44px tap area */
+.testimonial-carousel__dot::after {
+  content: '';
+  position: absolute;
+  inset: -17px;
 }
 
 .testimonial-carousel__dot:hover {
