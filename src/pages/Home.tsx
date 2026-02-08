@@ -280,7 +280,7 @@ export function Home() {
                 </ul>
                 <Link
                   to="/bookings"
-                  className="inline-flex items-center justify-center px-4 py-2 rounded-full bg-forest-700 text-white text-sm font-semibold hover:bg-forest-800 transition-colors"
+                  className="inline-flex items-center justify-center px-4 py-2 rounded-full bg-forest-200 text-white text-sm font-semibold hover:bg-trout-gold transition-colors"
                   itemProp="url"
                 >
                   {trip.cta}

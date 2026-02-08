@@ -3,8 +3,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { Header, Footer, ProtectedRoute } from './components/layout';
 import { PrivacyNotice } from './components/ui';
+import { Home } from './pages/Home';
 
-const Home = lazy(() => import('./pages/Home').then((module) => ({ default: module.Home })));
 const About = lazy(() => import('./pages/About').then((module) => ({ default: module.About })));
 const Bookings = lazy(() => import('./pages/Bookings').then((module) => ({ default: module.Bookings })));
 const Login = lazy(() => import('./pages/Login').then((module) => ({ default: module.Login })));
