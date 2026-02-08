@@ -34,3 +34,5 @@ dist-ssr
 # Firebase service account keys (never commit these!)
 firebase-admin-key.json
 *-firebase-adminsdk-*.json
+# Optional: Ignore build output directories
+scripts/
