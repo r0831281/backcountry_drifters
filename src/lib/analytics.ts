@@ -210,23 +210,131 @@ export function trackPageView(pageName: string, additionalData?: Record<string, 
   });
 }
 
-/**
- * Track booking submission
- */
-export function trackBookingSubmit(bookingData: {
+type DeviceCategory = 'mobile' | 'tablet' | 'desktop' | 'unknown';
+
+interface BookingAnalyticsPayload {
   tripId: string;
   tripTitle: string;
-  guestCount: number;
-  preferredDate: string;
-}) {
-  if (!analytics) return;
+  source?: string;
+  deviceCategory?: DeviceCategory;
+}
 
-  logEvent(analytics, 'booking_submit', {
-    trip_id: bookingData.tripId,
-    trip_title: bookingData.tripTitle,
-    guest_count: bookingData.guestCount,
-    preferred_date: bookingData.preferredDate,
-  });
+function getDeviceCategory(): DeviceCategory {
+  if (typeof window === 'undefined') return 'unknown';
+  const width = window.innerWidth;
+  if (width < 640) return 'mobile';
+  if (width < 1024) return 'tablet';
+  return 'desktop';
+}
+
+function buildBookingEventParams(
+  payload: BookingAnalyticsPayload,
+  extra?: Record<string, any>
+) {
+  return {
+    trip_id: payload.tripId,
+    trip_title: payload.tripTitle,
+    source: payload.source ?? 'booking_modal',
+    device_category: payload.deviceCategory ?? getDeviceCategory(),
+    ...extra,
+  };
+}
+
+export function trackBookingModalViewed(payload: BookingAnalyticsPayload) {
+  if (!analytics) return;
+  logEvent(analytics, 'booking_modal_view', buildBookingEventParams(payload));
+}
+
+export function trackBookingFormStarted(
+  payload: BookingAnalyticsPayload & { timeToFirstInputMs?: number }
+) {
+  if (!analytics) return;
+  logEvent(
+    analytics,
+    'booking_form_start',
+    buildBookingEventParams(payload, {
+      time_to_first_input_ms: payload.timeToFirstInputMs,
+    })
+  );
+}
+
+export function trackBookingValidationFailed(
+  payload: BookingAnalyticsPayload & { fields: string[] }
+) {
+  if (!analytics) return;
+  logEvent(
+    analytics,
+    'booking_validation_error',
+    buildBookingEventParams(payload, {
+      validation_fields: payload.fields,
+      validation_error_count: payload.fields.length,
+    })
+  );
+}
+
+export function trackBookingSubmissionAttempt(
+  payload: BookingAnalyticsPayload & {
+    guestCount: number;
+    preferredDate?: string;
+    formDurationMs?: number;
+  }
+) {
+  if (!analytics) return;
+  logEvent(
+    analytics,
+    'booking_submit_attempt',
+    buildBookingEventParams(payload, {
+      guest_count: payload.guestCount,
+      preferred_date: payload.preferredDate,
+      form_duration_ms: payload.formDurationMs,
+    })
+  );
+}
+
+export function trackBookingSubmissionSuccess(
+  payload: BookingAnalyticsPayload & {
+    guestCount: number;
+    preferredDate?: string;
+    formDurationMs?: number;
+    submissionLatencyMs?: number;
+  }
+) {
+  if (!analytics) return;
+  logEvent(
+    analytics,
+    'booking_submit_success',
+    buildBookingEventParams(payload, {
+      guest_count: payload.guestCount,
+      preferred_date: payload.preferredDate,
+      form_duration_ms: payload.formDurationMs,
+      submission_latency_ms: payload.submissionLatencyMs,
+    })
+  );
+}
+
+export function trackBookingSubmissionError(
+  payload: BookingAnalyticsPayload & {
+    guestCount: number;
+    preferredDate?: string;
+    formDurationMs?: number;
+    submissionLatencyMs?: number;
+    errorMessage?: string;
+    errorCode?: string;
+  }
+) {
+  if (!analytics) return;
+  logEvent(
+    analytics,
+    'booking_submit_error',
+    buildBookingEventParams(payload, {
+      guest_count: payload.guestCount,
+      preferred_date: payload.preferredDate,
+      form_duration_ms: payload.formDurationMs,
+      submission_latency_ms: payload.submissionLatencyMs,
+      error_message: payload.errorMessage,
+      error_code: payload.errorCode,
+    })
+  );
 }
 
 /**

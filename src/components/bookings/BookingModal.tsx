@@ -1,8 +1,16 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Modal, Button, Input, Textarea } from '../ui';
 import { type Trip, formatPrice, type BookingTrackingData } from '../../types';
 import { useBookings } from '../../hooks/useBookings';
-import { collectTrackingData, trackBookingSubmit } from '../../lib/analytics';
+import {
+  collectTrackingData,
+  trackBookingModalViewed,
+  trackBookingFormStarted,
+  trackBookingValidationFailed,
+  trackBookingSubmissionAttempt,
+  trackBookingSubmissionSuccess,
+  trackBookingSubmissionError,
+} from '../../lib/analytics';
 import {
   validateBookingForm,
   type BookingValidationErrors,
@@ -33,6 +41,44 @@ export function BookingModal({ trip, isOpen, onClose }: BookingModalProps) {
   const [errors, setErrors] = useState<BookingValidationErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [hasTrackedFormStart, setHasTrackedFormStart] = useState(false);
+  const modalOpenTimeRef = useRef<number | null>(null);
+  const formStartTimeRef = useRef<number | null>(null);
+
+  const now = () => (typeof performance !== 'undefined' ? performance.now() : Date.now());
+
+  useEffect(() => {
+    if (isOpen) {
+      modalOpenTimeRef.current = now();
+      formStartTimeRef.current = null;
+      setHasTrackedFormStart(false);
+      trackBookingModalViewed({
+        tripId: trip.id,
+        tripTitle: trip.title,
+        source: 'booking_modal',
+      });
+    } else {
+      modalOpenTimeRef.current = null;
+      formStartTimeRef.current = null;
+      setHasTrackedFormStart(false);
+    }
+  }, [isOpen, trip.id, trip.title]);
+
+  const markFormStarted = () => {
+    if (hasTrackedFormStart) return;
+    const interactionTime = now();
+    const timeToFirstInputMs = modalOpenTimeRef.current
+      ? Math.round(interactionTime - modalOpenTimeRef.current)
+      : undefined;
+    formStartTimeRef.current = interactionTime;
+    setHasTrackedFormStart(true);
+    trackBookingFormStarted({
+      tripId: trip.id,
+      tripTitle: trip.title,
+      source: 'booking_modal',
+      timeToFirstInputMs,
+    });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,12 +91,34 @@ export function BookingModal({ trip, isOpen, onClose }: BookingModalProps) {
       maxGuests: trip.maxGuests,
     });
 
-    if (Object.keys(validationErrors).length > 0) {
+    const invalidFields = Object.keys(validationErrors);
+
+    if (invalidFields.length > 0) {
+      trackBookingValidationFailed({
+        tripId: trip.id,
+        tripTitle: trip.title,
+        source: 'booking_modal',
+        fields: invalidFields,
+      });
       setErrors(validationErrors);
       return;
     }
 
     setIsSubmitting(true);
+
+    const formDurationMs = (() => {
+      const start = formStartTimeRef.current ?? modalOpenTimeRef.current;
+      return start ? Math.round(now() - start) : undefined;
+    })();
+
+    trackBookingSubmissionAttempt({
+      tripId: trip.id,
+      tripTitle: trip.title,
+      source: 'booking_modal',
+      guestCount: formData.guestCount,
+      preferredDate: formData.preferredDate || undefined,
+      formDurationMs,
+    });
 
     // --- Sanitization ---
     const sanitizedData = {
@@ -66,6 +134,8 @@ export function BookingModal({ trip, isOpen, onClose }: BookingModalProps) {
     warnIfSuspicious('guestName', formData.guestName);
     warnIfSuspicious('email', formData.email);
     warnIfSuspicious('specialRequests', formData.specialRequests);
+
+    const submissionStart = now();
 
     try {
       // Collect tracking data (fingerprint, IP, location, etc.)
@@ -125,13 +195,17 @@ export function BookingModal({ trip, isOpen, onClose }: BookingModalProps) {
       // Save booking to Firestore
       await createBooking(bookingData);
 
-      // Track booking event in Firebase Analytics (optional)
+      const submissionLatencyMs = Math.round(now() - submissionStart);
+
       try {
-        trackBookingSubmit({
+        trackBookingSubmissionSuccess({
           tripId: trip.id,
           tripTitle: trip.title,
+          source: 'booking_modal',
           guestCount: formData.guestCount,
-          preferredDate: formData.preferredDate,
+          preferredDate: formData.preferredDate || undefined,
+          formDurationMs,
+          submissionLatencyMs,
         });
       } catch (analyticsError) {
         console.warn('Analytics tracking failed:', analyticsError);
@@ -154,6 +228,26 @@ export function BookingModal({ trip, isOpen, onClose }: BookingModalProps) {
       }, 2500);
     } catch (error) {
       console.error('Booking submission error:', error);
+      const submissionLatencyMs = Math.round(now() - submissionStart);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorCode = (error as { code?: string })?.code;
+
+      try {
+        trackBookingSubmissionError({
+          tripId: trip.id,
+          tripTitle: trip.title,
+          source: 'booking_modal',
+          guestCount: formData.guestCount,
+          preferredDate: formData.preferredDate || undefined,
+          formDurationMs,
+          submissionLatencyMs,
+          errorMessage,
+          errorCode,
+        });
+      } catch (analyticsError) {
+        console.warn('Analytics tracking failed:', analyticsError);
+      }
+
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
@@ -164,6 +258,7 @@ export function BookingModal({ trip, isOpen, onClose }: BookingModalProps) {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
+    markFormStarted();
     setFormData((prev) => ({
       ...prev,
       [name]: name === 'guestCount' ? parseInt(value) || 1 : value,
