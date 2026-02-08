@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { collection, query, where, orderBy, limit, onSnapshot } from 'firebase/firestore';
+import { collection, query, where, orderBy, limit, onSnapshot, getDocs } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { COLLECTIONS, createDocument, updateDocument, deleteDocument } from '../lib/firestore';
 import { type Testimonial, type CreateTestimonialData, type UpdateTestimonialData } from '../types';
@@ -8,50 +8,85 @@ import { sanitizeObject } from '../lib/sanitization';
 interface UseTestimonialsOptions {
   includeUnapproved?: boolean;
   limitCount?: number;
+  realtime?: boolean;
 }
 
 export function useTestimonials(options: UseTestimonialsOptions = {}) {
-  const { includeUnapproved = false, limitCount = 10 } = options;
+  const { includeUnapproved = false, limitCount = 10, realtime = false } = options;
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Build query
-    const collectionRef = collection(db, COLLECTIONS.TESTIMONIALS);
-    let q = query(collectionRef, orderBy('createdAt', 'desc'), limit(limitCount));
+    let isMounted = true;
+    setLoading(true);
+    setError(null);
 
-    // Filter by approval status for public views
-    if (!includeUnapproved) {
-      q = query(
+    const collectionRef = collection(db, COLLECTIONS.TESTIMONIALS);
+    const buildQuery = () => {
+      if (includeUnapproved) {
+        return query(collectionRef, orderBy('createdAt', 'desc'), limit(limitCount));
+      }
+      return query(
         collectionRef,
         where('isApproved', '==', true),
         orderBy('createdAt', 'desc'),
         limit(limitCount)
       );
+    };
+
+    const q = buildQuery();
+
+    if (realtime) {
+      const unsubscribe = onSnapshot(
+        q,
+        (snapshot) => {
+          if (!isMounted) return;
+          const data = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          })) as Testimonial[];
+          setTestimonials(data);
+          setLoading(false);
+        },
+        (err) => {
+          if (!isMounted) return;
+          console.error('Error fetching testimonials:', err);
+          setError('Failed to load testimonials');
+          setLoading(false);
+        }
+      );
+
+      return () => {
+        isMounted = false;
+        unsubscribe();
+      };
     }
 
-    // Subscribe to real-time updates
-    const unsubscribe = onSnapshot(
-      q,
-      (snapshot) => {
+    const fetchTestimonials = async () => {
+      try {
+        const snapshot = await getDocs(q);
+        if (!isMounted) return;
         const data = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         })) as Testimonial[];
         setTestimonials(data);
         setLoading(false);
-        setError(null);
-      },
-      (err) => {
+      } catch (err) {
+        if (!isMounted) return;
         console.error('Error fetching testimonials:', err);
         setError('Failed to load testimonials');
         setLoading(false);
       }
-    );
+    };
 
-    return unsubscribe;
-  }, [includeUnapproved, limitCount]);
+    fetchTestimonials();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [includeUnapproved, limitCount, realtime]);
 
   const createTestimonial = async (data: CreateTestimonialData) => {
     try {

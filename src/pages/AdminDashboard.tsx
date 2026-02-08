@@ -65,7 +65,7 @@ export function AdminDashboard() {
   const bookingsPerPage = 5;
 
   // -- Testimonials state (using Firebase hook) -------------------------------
-  const { testimonials: allTestimonials, loading: testimonialsLoading, createTestimonial, updateTestimonial, deleteTestimonial: deleteTestimonialFromDB } = useTestimonials({ includeUnapproved: true, limitCount: 100 });
+  const { testimonials: allTestimonials, loading: testimonialsLoading, createTestimonial, updateTestimonial, deleteTestimonial: deleteTestimonialFromDB } = useTestimonials({ includeUnapproved: true, limitCount: 100, realtime: true });
 
   // -- Trips state (using filtered hook with admin mode) ---------------------
   const {
