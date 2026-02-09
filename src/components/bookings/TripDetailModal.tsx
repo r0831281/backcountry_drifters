@@ -114,8 +114,8 @@ export function TripDetailModal({ trip, isOpen, onClose, onBookNow }: TripDetail
           <div>
             <h3 className="text-lg font-semibold text-forest-700 mb-3">Included Equipment</h3>
             <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
-              {trip.includedEquipment.map((item, index) => (
-                <li key={index} className="flex items-start gap-2">
+              {trip.includedEquipment.map((item) => (
+                <li key={item} className="flex items-start gap-2">
                   <svg className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                     <path d="M5 13l4 4L19 7" />
                   </svg>
