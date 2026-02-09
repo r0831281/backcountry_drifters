@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { PageContainer, PageHeader } from '../components/layout';
 import { Card, CardContent, CardFooter, CardTitle, SkeletonCard, Button } from '../components/ui';
-import { BookingModal } from '../components/bookings';
+import { BookingModal, TripDetailModal } from '../components/bookings';
 import { useStaggerReveal } from '../hooks';
 import { useFilteredTrips } from '../hooks/useFilteredTrips';
 import { FilterPanel, ActiveFiltersDisplay, FilterButton, FilterDrawer } from '../components/filters';
@@ -22,6 +22,7 @@ export function Bookings() {
   } = useFilteredTrips({ activeOnly: true, enableURLState: true });
 
   const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
+  const [selectedTripForDetail, setSelectedTripForDetail] = useState<Trip | null>(null);
   const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
   const cardsReveal = useStaggerReveal<HTMLDivElement>();
 
@@ -155,6 +156,7 @@ export function Bookings() {
             <Card
               key={trip.id}
               hover
+              onClick={() => setSelectedTripForDetail(trip)}
               className={`
                 flex flex-col overflow-hidden
                 scroll-reveal
@@ -231,7 +233,10 @@ export function Bookings() {
                     <Button
                       variant="primary"
                       size="sm"
-                      onClick={() => setSelectedTrip(trip)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedTrip(trip);
+                      }}
                     >
                       Book Now
                     </Button>
@@ -255,6 +260,19 @@ export function Bookings() {
           onClearFilters={clearFilters}
         />
       </FilterDrawer>
+
+      {/* Trip Detail Modal */}
+      {selectedTripForDetail && (
+        <TripDetailModal
+          trip={selectedTripForDetail}
+          isOpen={!!selectedTripForDetail}
+          onClose={() => setSelectedTripForDetail(null)}
+          onBookNow={() => {
+            setSelectedTrip(selectedTripForDetail);
+            setSelectedTripForDetail(null);
+          }}
+        />
+      )}
 
       {/* Booking Modal */}
       {selectedTrip && (
