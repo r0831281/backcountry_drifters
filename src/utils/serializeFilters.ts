@@ -13,7 +13,7 @@ export function serializeTripFilters(filters: TripFilters): Record<string, strin
   }
 
   if (filters.difficulty.length > 0) {
-    params.difficulty = filters.difficulty.join(',');
+    params.difficulty = filters.difficulty.join('|');
   }
 
   if (filters.priceRange && (filters.priceRange[0] > 0 || filters.priceRange[1] < 10000)) {
@@ -21,15 +21,15 @@ export function serializeTripFilters(filters: TripFilters): Record<string, strin
   }
 
   if (filters.duration.length > 0) {
-    params.duration = filters.duration.join(',');
+    params.duration = filters.duration.join('|');
   }
 
   if (filters.location.length > 0) {
-    params.location = filters.location.join(',');
+    params.location = filters.location.join('|');
   }
 
   if (filters.status && filters.status.length > 0) {
-    params.status = filters.status.join(',');
+    params.status = filters.status.join('|');
   }
 
   if (filters.createdDateRange && filters.createdDateRange[0] && filters.createdDateRange[1]) {
@@ -53,10 +53,10 @@ export function deserializeTripFilters(
   defaultFilters: TripFilters
 ): TripFilters {
   const search = params.get('search') || '';
-  const difficulty = params.get('difficulty')?.split(',').filter(Boolean) || [];
-  const duration = params.get('duration')?.split(',').filter(Boolean) || [];
-  const location = params.get('location')?.split(',').filter(Boolean) || [];
-  const status = params.get('status')?.split(',').filter(Boolean) || [];
+  const difficulty = params.get('difficulty')?.split('|').filter(Boolean) || [];
+  const duration = params.get('duration')?.split('|').filter(Boolean) || [];
+  const location = params.get('location')?.split('|').filter(Boolean) || [];
+  const status = params.get('status')?.split('|').filter(Boolean) || [];
   const sortBy = params.get('sort') || undefined;
 
   // Parse price range
@@ -102,11 +102,11 @@ export function serializeBookingFilters(filters: BookingFilters): Record<string,
   }
 
   if (filters.status.length > 0) {
-    params.status = filters.status.join(',');
+    params.status = filters.status.join('|');
   }
 
   if (filters.tripId.length > 0) {
-    params.trip = filters.tripId.join(',');
+    params.trip = filters.tripId.join('|');
   }
 
   if (filters.submissionDateRange[0] && filters.submissionDateRange[1]) {
@@ -135,8 +135,8 @@ export function deserializeBookingFilters(
   params: URLSearchParams
 ): BookingFilters {
   const search = params.get('search') || '';
-  const status = params.get('status')?.split(',').filter(Boolean) || [];
-  const tripId = params.get('trip')?.split(',').filter(Boolean) || [];
+  const status = params.get('status')?.split('|').filter(Boolean) || [];
+  const tripId = params.get('trip')?.split('|').filter(Boolean) || [];
   const sortBy = params.get('sort') || undefined;
 
   // Parse submission date range

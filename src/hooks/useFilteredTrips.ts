@@ -59,10 +59,23 @@ export function useFilteredTrips(
   // Resolve current filters from either URL params or local state
   const filters = useMemo(() => {
     if (enableURLState) {
-      return deserializeTripFilters(searchParams, {
+      const deserialized = deserializeTripFilters(searchParams, {
         ...DEFAULT_TRIP_FILTERS,
         priceRange: filterOptions.priceRange,
       });
+      
+      // Validate deserialized filters against available options to handle stale URL params
+      // (e.g., locations from inactive trips that are no longer available)
+      const availableLocations = new Set(filterOptions.locations.map((loc) => loc.value));
+      const availableDurations = new Set(filterOptions.durations.map((dur) => dur.value));
+      const availableDifficulties = new Set(filterOptions.difficulties.map((diff) => diff.value));
+      
+      return {
+        ...deserialized,
+        location: deserialized.location.filter((loc) => availableLocations.has(loc)),
+        duration: deserialized.duration.filter((dur) => availableDurations.has(dur)),
+        difficulty: deserialized.difficulty.filter((diff) => availableDifficulties.has(diff)),
+      };
     }
     // For local state, ensure the price range defaults are sensible once data
     // loads. We keep the user's chosen price range if they have set one;
@@ -75,7 +88,7 @@ export function useFilteredTrips(
           ? filterOptions.priceRange
           : localFilters.priceRange,
     };
-  }, [enableURLState, searchParams, localFilters, filterOptions.priceRange]);
+  }, [enableURLState, searchParams, localFilters, filterOptions]);
 
   // Debounce search to avoid excessive filtering
   const debouncedSearch = useDebounce(filters.search, 300);
