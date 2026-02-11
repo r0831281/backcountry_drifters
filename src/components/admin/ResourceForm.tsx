@@ -151,7 +151,7 @@ export function ResourceForm({ isOpen, onClose, onSave, resource }: ResourceForm
       isOpen={isOpen}
       onClose={onClose}
       title={isEditing ? 'Edit Resource' : 'Add New Resource'}
-      size="large"
+      maxWidth="lg"
     >
       <form onSubmit={handleSubmit}>
         <div className="space-y-6 p-6">

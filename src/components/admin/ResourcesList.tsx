@@ -267,7 +267,7 @@ export function ResourcesList({
                     <Button size="sm" variant="outline" onClick={() => onEdit(resource)}>
                       Edit
                     </Button>
-                    <Button size="sm" variant="danger" onClick={() => onDelete(resource)}>
+                    <Button size="sm" variant="secondary" onClick={() => onDelete(resource)}>
                       Delete
                     </Button>
                   </div>
