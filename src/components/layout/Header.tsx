@@ -98,6 +98,9 @@ export function Header() {
             <Link to="/bookings" className={navLinkClasses('/bookings')}>
               Bookings
             </Link>
+            <Link to="/resources" className={navLinkClasses('/resources')}>
+              Resources
+            </Link>
             <Link to="/about" className={navLinkClasses('/about')}>
               About
             </Link>
@@ -172,6 +175,9 @@ export function Header() {
               </Link>
               <Link to="/bookings" className={mobileNavLinkClasses('/bookings')} onClick={handleMobileNavClick}>
                 Bookings
+              </Link>
+              <Link to="/resources" className={mobileNavLinkClasses('/resources')} onClick={handleMobileNavClick}>
+                Resources
               </Link>
               <Link to="/about" className={mobileNavLinkClasses('/about')} onClick={handleMobileNavClick}>
                 About
