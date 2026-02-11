@@ -12,6 +12,7 @@ export const STORAGE_PATHS = {
   TESTIMONIALS: 'testimonials',
   TRIPS: 'trips',
   GUIDES: 'guides',
+  RESOURCES: 'resources',
 } as const;
 
 // Allowed image types
@@ -157,4 +158,19 @@ export function generateFileName(originalName: string): string {
     .toLowerCase()
     .replace(/[^a-z0-9]/g, '_');
   return `${sanitizedName}_${timestamp}.${extension}`;
+}
+
+/**
+ * Upload resource image
+ */
+export async function uploadResourceImage(
+  resourceId: string,
+  file: File
+): Promise<string> {
+  const fileName = `${Date.now()}_${file.name}`;
+  return uploadImage(
+    file,
+    `${STORAGE_PATHS.RESOURCES}/${resourceId}`,
+    fileName
+  );
 }

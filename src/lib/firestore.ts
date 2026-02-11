@@ -24,6 +24,7 @@ export const COLLECTIONS = {
   TRIPS: 'trips',
   USERS: 'users',
   BOOKINGS: 'bookings',
+  RESOURCES: 'resources',
 } as const;
 
 // Generic Firestore helper functions
@@ -200,6 +201,36 @@ export async function upsertUserProfile(uid: string, data: DocumentData) {
       createdAt: serverTimestamp(),
     });
   }
+}
+
+// Resource-specific helpers
+
+/**
+ * Get visible resources for public display
+ */
+export async function getVisibleResources() {
+  return getDocuments(
+    COLLECTIONS.RESOURCES,
+    where('isVisible', '==', true),
+    orderBy('createdAt', 'desc')
+  );
+}
+
+/**
+ * Get all resources (admin only)
+ */
+export async function getAllResources() {
+  return getDocuments(
+    COLLECTIONS.RESOURCES,
+    orderBy('createdAt', 'desc')
+  );
+}
+
+/**
+ * Get a single resource by ID
+ */
+export async function getResourceById(resourceId: string) {
+  return getDocument(COLLECTIONS.RESOURCES, resourceId);
 }
 
 // Export common query builders

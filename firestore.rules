@@ -215,5 +215,33 @@ service cloud.firestore {
       allow read, update: if isAdmin();
       allow delete: if isAdmin();
     }
+
+    // Resources - public can read visible resources, admin can do everything with validation
+    match /resources/{resourceId} {
+      allow list: if true; // Allow listing all resources for public browsing
+      allow get: if resource.data.isVisible == true || isAdmin();
+
+      allow create: if isAdmin()
+        && isValidString(request.resource.data.title, 2, 200)
+        && noScriptTags(request.resource.data.title)
+        && isValidString(request.resource.data.text, 10, 10000)
+        && noScriptTags(request.resource.data.text)
+        && isValidUrl(request.resource.data.imageUrl)
+        && request.resource.data.category is string
+        && request.resource.data.category in ['gear', 'hatch-charts', 'techniques', 'locations', 'other']
+        && request.resource.data.isVisible is bool;
+
+      allow update: if isAdmin()
+        && isValidString(request.resource.data.title, 2, 200)
+        && noScriptTags(request.resource.data.title)
+        && isValidString(request.resource.data.text, 10, 10000)
+        && noScriptTags(request.resource.data.text)
+        && isValidUrl(request.resource.data.imageUrl)
+        && request.resource.data.category is string
+        && request.resource.data.category in ['gear', 'hatch-charts', 'techniques', 'locations', 'other']
+        && request.resource.data.isVisible is bool;
+
+      allow delete: if isAdmin();
+    }
   }
 }
