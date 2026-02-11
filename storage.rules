@@ -40,7 +40,7 @@ service firebase.storage {
     }
 
     // Resources photos - authenticated users can upload, public read
-    match /resources/{resourceId}/{fileName} {
+    match /resources/{fileName} {
       allow read: if true;
       allow write: if isAuthenticated() && isValidImage();
       allow delete: if isAuthenticated();

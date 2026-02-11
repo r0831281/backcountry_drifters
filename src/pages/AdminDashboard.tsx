@@ -207,6 +207,13 @@ export function AdminDashboard() {
     }
   }, [bookingsPage, bookingsTotalPages]);
 
+  // Reset resources page when the number of filtered results puts us past the last page
+  useEffect(() => {
+    if (resourcesPage > resourcesTotalPages && resourcesTotalPages > 0) {
+      setResourcesPage(resourcesTotalPages);
+    }
+  }, [resourcesPage, resourcesTotalPages]);
+
   const handleTestimonialsPageChange = useCallback((page: number) => {
     setTestimonialsPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });

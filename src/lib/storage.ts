@@ -164,13 +164,8 @@ export function generateFileName(originalName: string): string {
  * Upload resource image
  */
 export async function uploadResourceImage(
-  resourceId: string,
   file: File
 ): Promise<string> {
-  const fileName = `${Date.now()}_${file.name}`;
-  return uploadImage(
-    file,
-    `${STORAGE_PATHS.RESOURCES}/${resourceId}`,
-    fileName
-  );
+  const fileName = generateFileName(file.name);
+  return uploadImage(file, STORAGE_PATHS.RESOURCES, fileName);
 }
