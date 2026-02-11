@@ -4,5 +4,7 @@ export { TripsList } from './TripsList';
 export { TripForm } from './TripForm';
 export { BookingsList } from './BookingsList';
 export { BookingDetailModal } from './BookingDetailModal';
+export { ResourcesList } from './ResourcesList';
+export { ResourceForm } from './ResourceForm';
 export { ConfirmDialog } from './ConfirmDialog';
 export { Toast, type ToastData } from './Toast';
