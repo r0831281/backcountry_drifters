@@ -1,0 +1,83 @@
+BOOKINGS PAGE CONTENT
+================================================================================
+
+PAGE HEADER
+-----------
+Page Title:
+Book a Trip
+
+Page Subtitle:
+Choose from our selection of guided fly fishing adventures
+
+
+FILTER SECTION
+--------------
+[Note: The bookings page uses dynamic filters to help customers find trips. The filters include:]
+
+Search Filter:
+Search by trip name...
+
+Difficulty Levels:
+- Beginner
+- Intermediate
+- Advanced
+
+Duration Options:
+- Half Day
+- Full Day
+- Multi-Day
+
+Location Options:
+- Bow River
+- Red Deer River
+- Highwood River
+- Oldman River
+- Private Waters
+
+Price Range:
+Dynamic slider based on available trips
+
+
+TRIP DISPLAY
+------------
+[Note: Individual trip cards are dynamically generated from the database. Each card displays:]
+
+- Trip title
+- Difficulty badge (color-coded: Beginner = green, Intermediate = amber, Advanced = red)
+- Trip description
+- Duration
+- Maximum number of guests
+- Price per person
+- Trip photo (if available)
+- "Book Now" button
+
+When no trips match filters:
+Heading: No trips match your filters
+Description: Try adjusting your filter criteria to see more results.
+Button: Clear Filters
+
+When no trips are available at all:
+Heading: No trips are currently available
+Description: Please check back soon or contact us directly for availability.
+
+
+TRIP DETAILS (when clicking on a trip card)
+--------------------------------------------
+[Note: Opens a modal with full trip details including:]
+- Full description
+- Location details
+- What's included
+- What to bring
+- Difficulty level information
+- Price breakdown
+
+
+BOOKING FORM (when clicking "Book Now")
+----------------------------------------
+[Note: Opens a modal with a booking form that collects:]
+- Customer name
+- Email address
+- Phone number
+- Preferred date
+- Number of guests
+- Special requests or questions
