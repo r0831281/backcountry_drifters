@@ -19,8 +19,11 @@ export function useResources(options: UseResourcesOptions = {}) {
 
   useEffect(() => {
     let isMounted = true;
-    setLoading(true);
-    setError(null);
+    Promise.resolve().then(() => {
+      if (!isMounted) return;
+      setLoading(true);
+      setError(null);
+    });
 
     const collectionRef = collection(db, COLLECTIONS.RESOURCES);
     const buildQuery = () => {
