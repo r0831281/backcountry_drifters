@@ -586,7 +586,8 @@ input[type="radio"]:focus-visible {
   position: relative;
   width: 100%;
   max-width: 100%;
-  overflow: visible;
+  overflow-x: clip;
+  overflow-y: visible;
 }
 
 /* Viewport: contains overflow + arrow positioning context */
@@ -594,6 +595,7 @@ input[type="radio"]:focus-visible {
   position: relative;
   display: flex;
   align-items: center;
+  overflow-x: clip;
 }
 
 /* Overflow container clips the track */
