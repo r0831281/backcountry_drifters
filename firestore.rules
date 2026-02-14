@@ -246,7 +246,7 @@ service cloud.firestore {
 
     // Resource Categories - admin can manage, public can read
     match /resourceCategories/{categoryId} {
-      allow read: if true;
+      allow get, list: if true;
       
       allow create: if isAdmin()
         && isValidString(request.resource.data.name, 1, 100)
