@@ -144,7 +144,10 @@ export function sanitizeObject<T extends Record<string, unknown>>(
   const result: Record<string, unknown> = {};
 
   for (const [key, value] of Object.entries(obj)) {
-    if (value === null || value === undefined) {
+    if (value === undefined) {
+      continue;
+    }
+    if (value === null) {
       result[key] = value;
     } else if (typeof value === 'string') {
       result[key] = allowBasicHtml.includes(key)
@@ -153,9 +156,20 @@ export function sanitizeObject<T extends Record<string, unknown>>(
     } else if (typeof value === 'number' || typeof value === 'boolean') {
       result[key] = value;
     } else if (Array.isArray(value)) {
-      result[key] = value.map((item) =>
-        typeof item === 'string' ? sanitizeText(item) : item,
-      );
+      result[key] = value
+        .map((item) => {
+          if (item === undefined) return undefined;
+          if (typeof item === 'string') return sanitizeText(item);
+          if (Array.isArray(item)) return item;
+          if (item && typeof item === 'object') {
+            if (item.constructor && item.constructor.name !== 'Object') {
+              return item;
+            }
+            return sanitizeObject(item as Record<string, unknown>, options);
+          }
+          return item;
+        })
+        .filter((item) => item !== undefined);
     } else if (typeof value === 'object') {
       // Firestore Timestamp and similar objects should pass through
       if (
