@@ -1,4 +1,4 @@
-import { initializeApp } from 'firebase/app';
+import { initializeApp, setLogLevel } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
@@ -33,6 +33,11 @@ if (missingEnvVars.length > 0) {
     missingEnvVars.join(', ')
   );
   console.error('Please check your .env.local file');
+}
+
+if (import.meta.env.PROD) {
+  setLogLevel('silent');
+  console.log('env:prod');
 }
 
 // Initialize Firebase
