@@ -58,12 +58,16 @@ function truncateText(text: string, maxLength: number): string {
 /** Get preview text from blocks or fallback text. */
 function getResourcePreviewText(resource: Resource): string {
   if (resource.contentBlocks && resource.contentBlocks.length > 0) {
-    const paragraph = resource.contentBlocks.find((block) => block.type === 'paragraph' && block.text.trim().length > 0);
+    const paragraph = resource.contentBlocks.find(
+      (block) => block.type === 'paragraph' && typeof block.text === 'string' && block.text.trim().length > 0
+    );
     if (paragraph && paragraph.type === 'paragraph') {
       return paragraph.text;
     }
 
-    const list = resource.contentBlocks.find((block) => block.type === 'list' && block.items.length > 0);
+    const list = resource.contentBlocks.find(
+      (block) => block.type === 'list' && Array.isArray(block.items) && block.items.length > 0
+    );
     if (list && list.type === 'list') {
       return list.items.join(', ');
     }

@@ -79,12 +79,16 @@ function ResourceCard({ resource, categoryLabel }: { resource: Resource; categor
 
 function getResourcePreviewText(resource: Resource): string {
   if (resource.contentBlocks && resource.contentBlocks.length > 0) {
-    const paragraph = resource.contentBlocks.find((block) => block.type === 'paragraph' && block.text.trim().length > 0);
+    const paragraph = resource.contentBlocks.find(
+      (block) => block.type === 'paragraph' && typeof block.text === 'string' && block.text.trim().length > 0
+    );
     if (paragraph && paragraph.type === 'paragraph') {
       return truncateText(paragraph.text, 220);
     }
 
-    const list = resource.contentBlocks.find((block) => block.type === 'list' && block.items.length > 0);
+    const list = resource.contentBlocks.find(
+      (block) => block.type === 'list' && Array.isArray(block.items) && block.items.length > 0
+    );
     if (list && list.type === 'list') {
       return truncateText(list.items.join(', '), 220);
     }
@@ -106,8 +110,12 @@ function getResourceSearchText(resource: Resource): string {
   const blocksText = resource.contentBlocks
     ? resource.contentBlocks
         .map((block) => {
-          if (block.type === 'heading' || block.type === 'paragraph') return block.text;
-          if (block.type === 'list') return block.items.join(' ');
+          if (block.type === 'heading' || block.type === 'paragraph') {
+            return typeof block.text === 'string' ? block.text : '';
+          }
+          if (block.type === 'list') {
+            return Array.isArray(block.items) ? block.items.join(' ') : '';
+          }
           return '';
         })
         .join(' ')

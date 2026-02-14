@@ -127,7 +127,7 @@ export function ResourceDetail() {
     if (block.type === 'heading') {
       return (
         <h2 key={`heading-${index}`} className="text-2xl font-semibold text-gray-900">
-          {block.text}
+          {typeof block.text === 'string' ? block.text : ''}
         </h2>
       );
     }
@@ -135,15 +135,19 @@ export function ResourceDetail() {
     if (block.type === 'paragraph') {
       return (
         <p key={`paragraph-${index}`} className="text-gray-700 leading-relaxed whitespace-pre-line">
-          {block.text}
+          {typeof block.text === 'string' ? block.text : ''}
         </p>
       );
     }
 
     if (block.type === 'list') {
+      const items = Array.isArray(block.items) ? block.items : [];
+      if (items.length === 0) {
+        return null;
+      }
       return (
         <ul key={`list-${index}`} className="list-disc list-inside text-gray-700 space-y-1">
-          {block.items.map((item, itemIndex) => (
+          {items.map((item, itemIndex) => (
             <li key={`list-${index}-${itemIndex}`}>{item}</li>
           ))}
         </ul>
