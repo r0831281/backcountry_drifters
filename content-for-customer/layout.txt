@@ -1,0 +1,59 @@
+LAYOUT ELEMENTS (HEADER & FOOTER)
+================================================================================
+
+HEADER / NAVIGATION BAR
+-----------------------
+Logo Text:
+Backcountry Drifters
+Fly Fishing
+
+Navigation Menu Items (Desktop):
+- Home
+- Bookings
+- About
+- Admin Dashboard (only visible to admin users)
+
+Additional Header Elements:
+- "Sign Out" button (only visible to admin users)
+- User display name (only visible to admin users)
+- Mobile menu button (hamburger icon)
+
+
+FOOTER CONTENT
+--------------
+Brand Section:
+Heading: Backcountry Drifters Fly Fishing
+
+Description:
+Experience world-class fly fishing in the pristine waters of the Alberta foothills and Calgary area with Backcountry Drifters.
+
+
+Quick Links Section:
+Heading: Quick Links
+
+Links:
+- Home
+- Book a Trip
+- About Us
+- Admin
+
+
+Contact Information Section:
+Heading: Contact
+
+Location:
+Calgary, Alberta
+
+Email:
+info@backcountrydrifters.com
+
+Phone:
+(403) 555-FISH
+
+
+Footer Bottom Bar:
+Copyright Notice:
+© [Current Year] Backcountry Drifters Fly Fishing. All rights reserved.
+
+Credit Line:
+Crafted with care in Calgary, Alberta | Designed by jo-qu.com

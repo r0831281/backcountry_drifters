@@ -1,0 +1,90 @@
+CONTENT EXTRACTION SUMMARY
+================================================================================
+
+DATE CREATED: February 12, 2026
+PURPOSE: Customer content review and editing
+
+WHAT HAS BEEN PROVIDED
+-----------------------
+This directory contains 6 text files with all the static text content from your
+Backcountry Drifters Fly Fishing website. These files are designed to make it
+easy for you to review, edit, and adjust the content as needed.
+
+
+FILE OVERVIEW
+-------------
+1. README.txt (2.4 KB)
+   → Start here! Instructions on how to use these files
+   
+2. home-page.txt (3.7 KB)
+   → Complete homepage content including:
+     • Hero section with main headline and description
+     • Statistics (years guiding, days per season, reviews, waters)
+     • Why Choose section (3 features)
+     • Signature trips (3 detailed trip descriptions)
+     • Testimonials section
+     • Final call-to-action
+
+3. about-page.txt (4.7 KB)
+   → Complete About page content including:
+     • Guide bio (3 paragraphs)
+     • Guided trip specialties (4 trip types)
+     • Company values (3 core values)
+     • Waters we fish (4 locations)
+     • Certifications & affiliations (6 items)
+
+4. bookings-page.txt (1.8 KB)
+   → Bookings page interface text including:
+     • Page header
+     • Filter options and labels
+     • Empty state messages
+     • Note: Individual trip listings are managed in admin dashboard
+
+5. layout.txt (1.1 KB)
+   → Header and footer content including:
+     • Logo text
+     • Navigation menu items
+     • Footer sections and links
+
+6. contact.txt (1.4 KB)
+   → All contact information including:
+     • Business name
+     • Email, phone, location
+     • Service area details
+     • Certifications list
+
+
+HOW TO PROVIDE FEEDBACK
+------------------------
+1. Open each .txt file and read through the content
+2. Make notes directly in the files or in a separate document
+3. You can:
+   - Suggest new wording
+   - Mark sections to change with [CHANGE THIS]
+   - Write "DELETE THIS" for content to remove
+   - Add "ADD: your new content here" for additions
+
+4. Send the edited files back to your developer
+
+
+IMPORTANT NOTES
+---------------
+✓ These files contain only STATIC content (coded into the website)
+✓ Dynamic content (trips, testimonials) is managed via admin dashboard
+✓ Contact information is highlighted - please verify it's correct!
+✓ All text is organized by page and section for easy reference
+
+
+CURRENT CONTACT INFO TO VERIFY
+-------------------------------
+Email: info@backcountrydrifters.com
+Phone: (403) 555-FISH
+Location: Calgary, Alberta
+
+*** PLEASE CONFIRM THESE DETAILS ARE ACCURATE ***
+
+
+QUESTIONS?
+----------
+If you have any questions about the content or need clarification on any
+section, please contact your developer.
