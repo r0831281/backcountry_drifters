@@ -454,6 +454,15 @@ input[type="radio"]:focus-visible {
   @apply bg-gradient-to-r from-trout-gold to-trout-gold-dark bg-clip-text text-transparent;
 }
 
+.text-shadow-soft {
+  text-shadow: 0 2px 10px rgb(0 0 0 / 0.35);
+}
+
+.cta-section h2,
+.cta-section p {
+  color: #fff;
+}
+
 
 /* ============================================================
    BACKDROP BLUR
@@ -577,7 +586,7 @@ input[type="radio"]:focus-visible {
   position: relative;
   width: 100%;
   max-width: 100%;
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* Viewport: contains overflow + arrow positioning context */

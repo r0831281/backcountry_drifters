@@ -118,7 +118,7 @@ export function Home() {
 
 
             <h1 className="hero-critical__title text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-[1.1] animate-slide-up text-forest-50" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.35), 0 6px 18px rgba(0,0,0,0.35)' }}>
-              <span className="inline-block px-4 py-2 rounded-[2.25rem] bg-gradient-to-r from-forest-950/60 via-forest-900/25 to-transparent text-forest-50/95 shadow-[0_20px_45px_rgba(0,0,0,0.35)] backdrop-blur-sm">
+              <span className="inline-block p-3 m-1 px-2 rounded-[2.25rem] bg-gradient-to-r from-forest-950/60 via-forest-900/25 to-transparent text-forest-50/95 shadow-[0_20px_45px_rgba(0,0,0,0.35)] backdrop-blur-sm">
                 Alberta Guided Fly Fishing Adventures
               </span>
               <span className="block text-trout-gold/90 mt-2" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.35), 0 4px 8px rgba(0,0,0,0.25)' }}>Drift & walk-and-wade trips on Bow, Red Deer, and foothill rivers</span>
@@ -371,7 +371,7 @@ export function Home() {
           ============================================================ */}
       <section
         ref={ctaReveal.observe}
-        className="section bg-gradient-to-br from-forest-700 via-forest-600 to-forest-700 text-white relative overflow-hidden"
+        className="section cta-section bg-gradient-to-br from-forest-700 via-forest-600 to-forest-700 text-white relative overflow-hidden"
       >
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-trout-gold/30 to-transparent" aria-hidden="true" />
 
@@ -382,10 +382,10 @@ export function Home() {
             ${ctaReveal.isVisible ? 'is-visible' : ''}
           `}
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white text-shadow-soft">
             Ready to Book an Alberta Fly Fishing Guide?
           </h2>
-          <p className="text-lg text-forest-100/90 mb-10 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg text-white/90 text-shadow-soft mb-10 max-w-2xl mx-auto leading-relaxed">
             Lock in your preferred dates for Bow River drift trips, Red Deer River walk-and-wade outings,
             or fully customized foothills itineraries with Backcountry Drifters.
           </p>
