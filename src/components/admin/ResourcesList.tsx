@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { type Resource } from '../../types';
-import { Button, Card } from '../ui';
+import { Button, Card, Input } from '../ui';
 import { useResourceCategories } from '../../hooks';
 
 interface ResourcesListProps {
@@ -10,11 +10,28 @@ interface ResourcesListProps {
   totalPages: number;
   itemsPerPage: number;
   totalItems: number;
+  allItems: number;
   onAdd: () => void;
   onEdit: (resource: Resource) => void;
   onDelete: (resource: Resource) => void;
   onToggleVisibility: (resource: Resource) => void;
   onPageChange: (page: number) => void;
+  filters: {
+    search: string;
+    category: string;
+    status: 'all' | 'visible' | 'hidden';
+  };
+  onFilterChange: (next: {
+    search?: string;
+    category?: string;
+    status?: 'all' | 'visible' | 'hidden';
+  }) => void;
+  onClearFilters: () => void;
+  stats: {
+    total: number;
+    visible: number;
+    hidden: number;
+  };
 }
 
 /** Format a Firestore Timestamp or fallback for display. */
@@ -36,6 +53,23 @@ function formatDate(timestamp: { toDate?: () => Date } | undefined): string {
 function truncateText(text: string, maxLength: number): string {
   if (text.length <= maxLength) return text;
   return text.slice(0, maxLength).trimEnd() + '...';
+}
+
+/** Get preview text from blocks or fallback text. */
+function getResourcePreviewText(resource: Resource): string {
+  if (resource.contentBlocks && resource.contentBlocks.length > 0) {
+    const paragraph = resource.contentBlocks.find((block) => block.type === 'paragraph' && block.text.trim().length > 0);
+    if (paragraph && paragraph.type === 'paragraph') {
+      return paragraph.text;
+    }
+
+    const list = resource.contentBlocks.find((block) => block.type === 'list' && block.items.length > 0);
+    if (list && list.type === 'list') {
+      return list.items.join(', ');
+    }
+  }
+
+  return resource.text || '';
 }
 
 /** Get category label from value */
@@ -70,11 +104,16 @@ export function ResourcesList({
   totalPages,
   itemsPerPage,
   totalItems,
+  allItems,
   onAdd,
   onEdit,
   onDelete,
   onToggleVisibility,
   onPageChange,
+  filters,
+  onFilterChange,
+  onClearFilters,
+  stats,
 }: ResourcesListProps) {
   // Load categories for label mapping
   const { categories } = useResourceCategories();
@@ -85,6 +124,11 @@ export function ResourcesList({
     categories.forEach(cat => map.set(cat.name, cat.label));
     return map;
   }, [categories]);
+
+  const hasActiveFilters =
+    filters.search.trim().length > 0 ||
+    filters.category !== 'all' ||
+    filters.status !== 'all';
 
   if (loading) {
     return (
@@ -102,12 +146,12 @@ export function ResourcesList({
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
         <h2 className="text-xl font-semibold text-forest-700">
           Manage Resources
           {totalItems > 0 && (
             <span className="ml-2 text-sm font-normal text-gray-500">
-              ({totalItems} total)
+              ({totalItems} shown{allItems !== totalItems ? ` of ${allItems}` : ''})
             </span>
           )}
         </h2>
@@ -121,6 +165,74 @@ export function ResourcesList({
         </Button>
       </div>
 
+      <div className="rounded-xl border border-gray-200 bg-white p-4 mb-6">
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex-1 min-w-[220px]">
+            <Input
+              label="Search"
+              value={filters.search}
+              onChange={(e) => onFilterChange({ search: e.target.value })}
+              placeholder="Search title or content..."
+            />
+          </div>
+          <div className="min-w-[180px]">
+            <label className="block text-sm font-medium text-gray-700 mb-1.5" htmlFor="resource-category-filter">
+              Category
+            </label>
+            <select
+              id="resource-category-filter"
+              value={filters.category}
+              onChange={(e) => onFilterChange({ category: e.target.value })}
+              className="w-full px-4 py-2.5 rounded-lg border border-gray-200 bg-white transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] focus:outline-none focus:ring-2 focus:ring-forest-500/30 focus:border-forest-500"
+            >
+              <option value="all">All categories</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.name}>
+                  {category.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="min-w-[160px]">
+            <label className="block text-sm font-medium text-gray-700 mb-1.5" htmlFor="resource-status-filter">
+              Status
+            </label>
+            <select
+              id="resource-status-filter"
+              value={filters.status}
+              onChange={(e) => onFilterChange({ status: e.target.value as 'all' | 'visible' | 'hidden' })}
+              className="w-full px-4 py-2.5 rounded-lg border border-gray-200 bg-white transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] focus:outline-none focus:ring-2 focus:ring-forest-500/30 focus:border-forest-500"
+            >
+              <option value="all">All</option>
+              <option value="visible">Visible</option>
+              <option value="hidden">Hidden</option>
+            </select>
+          </div>
+          <div className="flex items-end gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={onClearFilters}
+              disabled={!hasActiveFilters}
+            >
+              Clear Filters
+            </Button>
+          </div>
+        </div>
+        <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-gray-600">
+          <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-gray-100">
+            Total {stats.total}
+          </span>
+          <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-green-100 text-green-700">
+            Visible {stats.visible}
+          </span>
+          <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-gray-100 text-gray-700">
+            Hidden {stats.hidden}
+          </span>
+        </div>
+      </div>
+
       {resources.length === 0 ? (
         <Card className="text-center py-16">
           <div className="flex flex-col items-center gap-4">
@@ -130,14 +242,24 @@ export function ResourcesList({
               </svg>
             </div>
             <div>
-              <p className="text-gray-600 font-medium">No resources yet</p>
+              <p className="text-gray-600 font-medium">
+                {hasActiveFilters ? 'No matching resources' : 'No resources yet'}
+              </p>
               <p className="text-sm text-gray-400 mt-1">
-                Add your first resource to get started.
+                {hasActiveFilters
+                  ? 'Try adjusting or clearing your filters.'
+                  : 'Add your first resource to get started.'}
               </p>
             </div>
-            <Button variant="outline" size="sm" onClick={onAdd}>
-              Add First Resource
-            </Button>
+            {hasActiveFilters ? (
+              <Button variant="outline" size="sm" onClick={onClearFilters}>
+                Clear Filters
+              </Button>
+            ) : (
+              <Button variant="outline" size="sm" onClick={onAdd}>
+                Add First Resource
+              </Button>
+            )}
           </div>
         </Card>
       ) : (
@@ -188,7 +310,7 @@ export function ResourcesList({
                     <td className="px-6 py-4">
                       <div className="max-w-xs">
                         <div className="text-sm font-medium text-gray-900">{truncateText(resource.title, 50)}</div>
-                        <div className="text-sm text-gray-500 mt-1">{truncateText(resource.text, 80)}</div>
+                        <div className="text-sm text-gray-500 mt-1">{truncateText(getResourcePreviewText(resource), 80)}</div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -280,7 +402,7 @@ export function ResourcesList({
                       {truncateText(resource.title, 50)}
                     </h3>
                     <p className="text-xs text-gray-500 mb-2">
-                      {truncateText(resource.text, 60)}
+                      {truncateText(getResourcePreviewText(resource), 60)}
                     </p>
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${getCategoryColor(resource.category)}`}>

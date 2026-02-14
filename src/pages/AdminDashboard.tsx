@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { PageContainer, PageHeader } from '../components/layout';
 import {
   TestimonialsList,
@@ -74,6 +74,9 @@ export function AdminDashboard() {
 
   const [resourcesPage, setResourcesPage] = useState(1);
   const resourcesPerPage = 6;
+  const [resourceSearch, setResourceSearch] = useState('');
+  const [resourceCategoryFilter, setResourceCategoryFilter] = useState('all');
+  const [resourceStatusFilter, setResourceStatusFilter] = useState<'all' | 'visible' | 'hidden'>('all');
 
   // -- Testimonials state (using Firebase hook) -------------------------------
   const { testimonials: allTestimonials, loading: testimonialsLoading, createTestimonial, updateTestimonial, deleteTestimonial: deleteTestimonialFromDB } = useTestimonials({ includeUnapproved: true, limitCount: 100, realtime: true });
@@ -170,49 +173,67 @@ export function AdminDashboard() {
 
   // -- Paginated data ----------------------------------------------------------
   const testimonialsTotalPages = Math.ceil(allTestimonials.length / testimonialsPerPage);
+  const safeTestimonialsPage = testimonialsTotalPages > 0
+    ? Math.min(testimonialsPage, testimonialsTotalPages)
+    : 1;
   const paginatedTestimonials = allTestimonials.slice(
-    (testimonialsPage - 1) * testimonialsPerPage,
-    testimonialsPage * testimonialsPerPage
+    (safeTestimonialsPage - 1) * testimonialsPerPage,
+    safeTestimonialsPage * testimonialsPerPage
   );
 
   const tripsTotalPages = Math.ceil(allTrips.length / tripsPerPage);
+  const safeTripsPage = tripsTotalPages > 0
+    ? Math.min(tripsPage, tripsTotalPages)
+    : 1;
   const paginatedTrips = allTrips.slice(
-    (tripsPage - 1) * tripsPerPage,
-    tripsPage * tripsPerPage
+    (safeTripsPage - 1) * tripsPerPage,
+    safeTripsPage * tripsPerPage
   );
 
   const bookingsTotalPages = Math.ceil(allBookings.length / bookingsPerPage);
+  const safeBookingsPage = bookingsTotalPages > 0
+    ? Math.min(bookingsPage, bookingsTotalPages)
+    : 1;
   const paginatedBookings = allBookings.slice(
-    (bookingsPage - 1) * bookingsPerPage,
-    bookingsPage * bookingsPerPage
+    (safeBookingsPage - 1) * bookingsPerPage,
+    safeBookingsPage * bookingsPerPage
   );
 
-  const resourcesTotalPages = Math.ceil(allResources.length / resourcesPerPage);
-  const paginatedResources = allResources.slice(
-    (resourcesPage - 1) * resourcesPerPage,
-    resourcesPage * resourcesPerPage
+  const filteredResources = useMemo(() => {
+    const query = resourceSearch.trim().toLowerCase();
+    return allResources.filter((resource) => {
+      const matchesSearch =
+        query.length === 0 ||
+        resource.title.toLowerCase().includes(query) ||
+        (resource.text || '').toLowerCase().includes(query);
+
+      const matchesCategory =
+        resourceCategoryFilter === 'all' || resource.category === resourceCategoryFilter;
+
+      const matchesStatus =
+        resourceStatusFilter === 'all' ||
+        (resourceStatusFilter === 'visible' ? resource.isVisible : !resource.isVisible);
+
+      return matchesSearch && matchesCategory && matchesStatus;
+    });
+  }, [allResources, resourceSearch, resourceCategoryFilter, resourceStatusFilter]);
+
+  const resourcesTotalPages = Math.ceil(filteredResources.length / resourcesPerPage);
+  const safeResourcesPage = resourcesTotalPages > 0
+    ? Math.min(resourcesPage, resourcesTotalPages)
+    : 1;
+  const paginatedResources = filteredResources.slice(
+    (safeResourcesPage - 1) * resourcesPerPage,
+    safeResourcesPage * resourcesPerPage
   );
 
-  // Reset trips page when the number of filtered results puts us past the last page
-  useEffect(() => {
-    if (tripsPage > tripsTotalPages && tripsTotalPages > 0) {
-      setTripsPage(tripsTotalPages);
-    }
-  }, [tripsPage, tripsTotalPages]);
+  const visibleResourcesCount = useMemo(
+    () => allResources.filter((resource) => resource.isVisible).length,
+    [allResources]
+  );
+  const hiddenResourcesCount = allResources.length - visibleResourcesCount;
 
-  // Reset bookings page when the number of filtered results puts us past the last page
-  useEffect(() => {
-    if (bookingsPage > bookingsTotalPages && bookingsTotalPages > 0) {
-      setBookingsPage(bookingsTotalPages);
-    }
-  }, [bookingsPage, bookingsTotalPages]);
-
-  // Reset resources page when the number of filtered results puts us past the last page
-  useEffect(() => {
-    if (resourcesPage > resourcesTotalPages && resourcesTotalPages > 0) {
-      setResourcesPage(resourcesTotalPages);
-    }
-  }, [resourcesPage, resourcesTotalPages]);
+  // No setState inside effects; clamp in render via safe*Page values.
 
   const handleTestimonialsPageChange = useCallback((page: number) => {
     setTestimonialsPage(page);
@@ -232,6 +253,24 @@ export function AdminDashboard() {
   const handleResourcesPageChange = useCallback((page: number) => {
     setResourcesPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  const handleResourceFilterChange = useCallback((next: {
+    search?: string;
+    category?: string;
+    status?: 'all' | 'visible' | 'hidden';
+  }) => {
+    setResourcesPage(1);
+    if (next.search !== undefined) setResourceSearch(next.search);
+    if (next.category !== undefined) setResourceCategoryFilter(next.category);
+    if (next.status !== undefined) setResourceStatusFilter(next.status);
+  }, []);
+
+  const handleClearResourceFilters = useCallback(() => {
+    setResourcesPage(1);
+    setResourceSearch('');
+    setResourceCategoryFilter('all');
+    setResourceStatusFilter('all');
   }, []);
 
   // ---------------------------------------------------------------------------
@@ -503,7 +542,7 @@ export function AdminDashboard() {
           <TestimonialsList
             testimonials={paginatedTestimonials}
             loading={testimonialsLoading}
-            currentPage={testimonialsPage}
+            currentPage={safeTestimonialsPage}
             totalPages={testimonialsTotalPages}
             itemsPerPage={testimonialsPerPage}
             totalItems={allTestimonials.length}
@@ -521,7 +560,7 @@ export function AdminDashboard() {
           <TripsList
             trips={paginatedTrips}
             loading={tripsLoading}
-            currentPage={tripsPage}
+            currentPage={safeTripsPage}
             totalPages={tripsTotalPages}
             itemsPerPage={tripsPerPage}
             totalItems={allTrips.length}
@@ -542,7 +581,7 @@ export function AdminDashboard() {
           <BookingsList
             bookings={paginatedBookings}
             loading={bookingsLoading}
-            currentPage={bookingsPage}
+            currentPage={safeBookingsPage}
             totalPages={bookingsTotalPages}
             itemsPerPage={bookingsPerPage}
             totalItems={allBookings.length}
@@ -562,15 +601,28 @@ export function AdminDashboard() {
           <ResourcesList
             resources={paginatedResources}
             loading={resourcesLoading}
-            currentPage={resourcesPage}
+            currentPage={safeResourcesPage}
             totalPages={resourcesTotalPages}
             itemsPerPage={resourcesPerPage}
-            totalItems={allResources.length}
+            totalItems={filteredResources.length}
+            allItems={allResources.length}
             onAdd={handleAddResource}
             onEdit={handleEditResource}
             onDelete={handleRequestDeleteResource}
             onToggleVisibility={handleToggleResourceVisibility}
             onPageChange={handleResourcesPageChange}
+            filters={{
+              search: resourceSearch,
+              category: resourceCategoryFilter,
+              status: resourceStatusFilter,
+            }}
+            onFilterChange={handleResourceFilterChange}
+            onClearFilters={handleClearResourceFilters}
+            stats={{
+              total: allResources.length,
+              visible: visibleResourcesCount,
+              hidden: hiddenResourcesCount,
+            }}
           />
         )}
       </div>

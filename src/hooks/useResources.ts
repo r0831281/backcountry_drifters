@@ -24,15 +24,8 @@ export function useResources(options: UseResourcesOptions = {}) {
 
     const collectionRef = collection(db, COLLECTIONS.RESOURCES);
     const buildQuery = () => {
-      if (includeHidden) {
-        return query(collectionRef, orderBy('createdAt', 'desc'), limit(limitCount));
-      }
-      return query(
-        collectionRef,
-        where('isVisible', '==', true),
-        orderBy('createdAt', 'desc'),
-        limit(limitCount)
-      );
+      // Avoid composite index requirements by filtering visibility client-side.
+      return query(collectionRef, orderBy('createdAt', 'desc'), limit(limitCount));
     };
 
     const q = buildQuery();
@@ -46,7 +39,8 @@ export function useResources(options: UseResourcesOptions = {}) {
             id: doc.id,
             ...doc.data(),
           })) as Resource[];
-          setResources(data);
+          const filtered = includeHidden ? data : data.filter((item) => item.isVisible);
+          setResources(filtered);
           setLoading(false);
         },
         (err) => {
@@ -71,7 +65,8 @@ export function useResources(options: UseResourcesOptions = {}) {
           id: doc.id,
           ...doc.data(),
         })) as Resource[];
-        setResources(data);
+        const filtered = includeHidden ? data : data.filter((item) => item.isVisible);
+        setResources(filtered);
         setLoading(false);
       } catch (err) {
         if (!isMounted) return;

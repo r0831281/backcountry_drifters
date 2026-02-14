@@ -15,12 +15,19 @@ export interface ResourceCategory {
 /**
  * Resource interface - represents a resource item (gear guide, hatch chart, etc.)
  */
+export type ResourceContentBlock =
+  | { type: 'heading'; text: string }
+  | { type: 'paragraph'; text: string }
+  | { type: 'list'; items: string[] }
+  | { type: 'image'; imageUrl: string; alt?: string };
+
 export interface Resource {
   id: string;
   title: string;
-  text: string;
+  text?: string;
   imageUrl?: string;
   category: string;
+  contentBlocks?: ResourceContentBlock[];
   isVisible: boolean;
   createdAt: Timestamp;
   updatedAt?: Timestamp;
@@ -31,9 +38,10 @@ export interface Resource {
  */
 export interface ResourceFormData {
   title: string;
-  text: string;
+  text?: string;
   imageUrl?: string;
   category: string;
+  contentBlocks: ResourceContentBlock[];
   isVisible: boolean;
 }
 
