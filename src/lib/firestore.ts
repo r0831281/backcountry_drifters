@@ -24,6 +24,8 @@ export const COLLECTIONS = {
   TRIPS: 'trips',
   USERS: 'users',
   BOOKINGS: 'bookings',
+  RESOURCES: 'resources',
+  RESOURCE_CATEGORIES: 'resourceCategories',
 } as const;
 
 // Generic Firestore helper functions
@@ -200,6 +202,55 @@ export async function upsertUserProfile(uid: string, data: DocumentData) {
       createdAt: serverTimestamp(),
     });
   }
+}
+
+// Resource-specific helpers
+
+/**
+ * Get visible resources for public display
+ */
+export async function getVisibleResources() {
+  return getDocuments(
+    COLLECTIONS.RESOURCES,
+    where('isVisible', '==', true),
+    orderBy('createdAt', 'desc')
+  );
+}
+
+/**
+ * Get all resources (admin only)
+ */
+export async function getAllResources() {
+  return getDocuments(
+    COLLECTIONS.RESOURCES,
+    orderBy('createdAt', 'desc')
+  );
+}
+
+/**
+ * Get a single resource by ID
+ */
+export async function getResourceById(resourceId: string) {
+  return getDocument(COLLECTIONS.RESOURCES, resourceId);
+}
+
+// Resource category-specific helpers
+
+/**
+ * Get all resource categories ordered by order field
+ */
+export async function getResourceCategories() {
+  return getDocuments(
+    COLLECTIONS.RESOURCE_CATEGORIES,
+    orderBy('order', 'asc')
+  );
+}
+
+/**
+ * Get a single resource category by ID
+ */
+export async function getResourceCategoryById(categoryId: string) {
+  return getDocument(COLLECTIONS.RESOURCE_CATEGORIES, categoryId);
 }
 
 // Export common query builders

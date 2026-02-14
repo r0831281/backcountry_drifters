@@ -6,6 +6,8 @@ import {
   TripsList,
   TripForm,
   BookingsList,
+  ResourcesList,
+  ResourceForm,
   ConfirmDialog,
   Toast,
   type ToastData,
@@ -16,21 +18,24 @@ import {
   type Trip,
   type TripFormData,
   type Booking,
+  type Resource,
+  type ResourceFormData,
 } from '../types';
 import { useFilteredBookings } from '../hooks/useFilteredBookings';
 import { useFilteredTrips } from '../hooks/useFilteredTrips';
 import { useTestimonials } from '../hooks/useTestimonials';
 import { useTrips } from '../hooks/useTrips';
 import { useBookings } from '../hooks/useBookings';
+import { useResources } from '../hooks/useResources';
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
-type AdminTab = 'testimonials' | 'trips' | 'bookings';
+type AdminTab = 'testimonials' | 'trips' | 'bookings' | 'resources';
 
 interface DeleteTarget {
-  type: 'testimonial' | 'trip' | 'booking';
+  type: 'testimonial' | 'trip' | 'booking' | 'resource';
   id: string;
   label: string;
 }
@@ -63,6 +68,12 @@ export function AdminDashboard() {
 
   const [bookingsPage, setBookingsPage] = useState(1);
   const bookingsPerPage = 5;
+
+  // -- Resources state --------------------------------------------------------
+  const { resources: allResources, loading: resourcesLoading, createResource, updateResource, deleteResource: deleteResourceFromDB } = useResources({ includeHidden: true, limitCount: 100, realtime: true });
+
+  const [resourcesPage, setResourcesPage] = useState(1);
+  const resourcesPerPage = 6;
 
   // -- Testimonials state (using Firebase hook) -------------------------------
   const { testimonials: allTestimonials, loading: testimonialsLoading, createTestimonial, updateTestimonial, deleteTestimonial: deleteTestimonialFromDB } = useTestimonials({ includeUnapproved: true, limitCount: 100, realtime: true });
@@ -138,6 +149,9 @@ export function AdminDashboard() {
   const [tripFormOpen, setTripFormOpen] = useState(false);
   const [editingTrip, setEditingTrip] = useState<Trip | null>(null);
 
+  const [resourceFormOpen, setResourceFormOpen] = useState(false);
+  const [editingResource, setEditingResource] = useState<Resource | null>(null);
+
   // -- Delete confirmation state -----------------------------------------------
   const [deleteTarget, setDeleteTarget] = useState<DeleteTarget | null>(null);
   const [deleting, setDeleting] = useState(false);
@@ -173,6 +187,12 @@ export function AdminDashboard() {
     bookingsPage * bookingsPerPage
   );
 
+  const resourcesTotalPages = Math.ceil(allResources.length / resourcesPerPage);
+  const paginatedResources = allResources.slice(
+    (resourcesPage - 1) * resourcesPerPage,
+    resourcesPage * resourcesPerPage
+  );
+
   // Reset trips page when the number of filtered results puts us past the last page
   useEffect(() => {
     if (tripsPage > tripsTotalPages && tripsTotalPages > 0) {
@@ -187,6 +207,13 @@ export function AdminDashboard() {
     }
   }, [bookingsPage, bookingsTotalPages]);
 
+  // Reset resources page when the number of filtered results puts us past the last page
+  useEffect(() => {
+    if (resourcesPage > resourcesTotalPages && resourcesTotalPages > 0) {
+      setResourcesPage(resourcesTotalPages);
+    }
+  }, [resourcesPage, resourcesTotalPages]);
+
   const handleTestimonialsPageChange = useCallback((page: number) => {
     setTestimonialsPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -199,6 +226,11 @@ export function AdminDashboard() {
 
   const handleBookingsPageChange = useCallback((page: number) => {
     setBookingsPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  const handleResourcesPageChange = useCallback((page: number) => {
+    setResourcesPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
@@ -325,6 +357,56 @@ export function AdminDashboard() {
   }, []);
 
   // ---------------------------------------------------------------------------
+  // Resource CRUD
+  // ---------------------------------------------------------------------------
+
+  const handleAddResource = useCallback(() => {
+    setEditingResource(null);
+    setResourceFormOpen(true);
+  }, []);
+
+  const handleEditResource = useCallback((resource: Resource) => {
+    setEditingResource(resource);
+    setResourceFormOpen(true);
+  }, []);
+
+  const handleSaveResource = useCallback(async (data: ResourceFormData) => {
+    try {
+      if (editingResource) {
+        // UPDATE existing
+        await updateResource(editingResource.id, data);
+        addToast(`Resource "${data.title}" updated successfully.`);
+      } else {
+        // CREATE new
+        await createResource(data);
+        addToast(`Resource "${data.title}" added successfully.`);
+      }
+    } catch (error) {
+      console.error('Error saving resource:', error);
+      addToast('Failed to save resource', 'error');
+    }
+  }, [editingResource, createResource, updateResource, addToast]);
+
+  const handleToggleResourceVisibility = useCallback(async (resource: Resource) => {
+    try {
+      await updateResource(resource.id, { isVisible: !resource.isVisible });
+      const newStatus = !resource.isVisible ? 'visible' : 'hidden';
+      addToast(`Resource "${resource.title}" is now ${newStatus}.`, 'info');
+    } catch (error) {
+      console.error('Error toggling resource visibility:', error);
+      addToast('Failed to update resource visibility', 'error');
+    }
+  }, [updateResource, addToast]);
+
+  const handleRequestDeleteResource = useCallback((resource: Resource) => {
+    setDeleteTarget({
+      type: 'resource',
+      id: resource.id,
+      label: `resource "${resource.title}"`,
+    });
+  }, []);
+
+  // ---------------------------------------------------------------------------
   // Shared delete confirmation handler
   // ---------------------------------------------------------------------------
 
@@ -342,6 +424,8 @@ export function AdminDashboard() {
         await deleteTripFromDB(deleteTarget.id);
       } else if (deleteTarget.type === 'booking') {
         await deleteBookingFromDB(deleteTarget.id);
+      } else if (deleteTarget.type === 'resource') {
+        await deleteResourceFromDB(deleteTarget.id);
       }
 
       addToast(`The ${deleteTarget.label} was deleted.`, 'success');
@@ -352,7 +436,7 @@ export function AdminDashboard() {
 
     setDeleteTarget(null);
     setDeleting(false);
-  }, [deleteTarget, deleteTestimonialFromDB, deleteTripFromDB, deleteBookingFromDB, addToast]);
+  }, [deleteTarget, deleteTestimonialFromDB, deleteTripFromDB, deleteBookingFromDB, deleteResourceFromDB, addToast]);
 
   // ---------------------------------------------------------------------------
   // Tab definitions
@@ -362,6 +446,7 @@ export function AdminDashboard() {
     { id: 'testimonials', label: 'Testimonials', count: allTestimonials.length },
     { id: 'trips', label: 'Trips', count: allTrips.length },
     { id: 'bookings', label: 'Bookings', count: allBookings.length },
+    { id: 'resources', label: 'Resources', count: allResources.length },
   ];
 
   // ---------------------------------------------------------------------------
@@ -472,6 +557,24 @@ export function AdminDashboard() {
         )}
       </div>
 
+      <div id="panel-resources" role="tabpanel" hidden={activeTab !== 'resources'}>
+        {activeTab === 'resources' && (
+          <ResourcesList
+            resources={paginatedResources}
+            loading={resourcesLoading}
+            currentPage={resourcesPage}
+            totalPages={resourcesTotalPages}
+            itemsPerPage={resourcesPerPage}
+            totalItems={allResources.length}
+            onAdd={handleAddResource}
+            onEdit={handleEditResource}
+            onDelete={handleRequestDeleteResource}
+            onToggleVisibility={handleToggleResourceVisibility}
+            onPageChange={handleResourcesPageChange}
+          />
+        )}
+      </div>
+
       {/* Modals */}
       <TestimonialForm
         isOpen={testimonialFormOpen}
@@ -491,6 +594,16 @@ export function AdminDashboard() {
         }}
         onSave={handleSaveTrip}
         trip={editingTrip}
+      />
+
+      <ResourceForm
+        isOpen={resourceFormOpen}
+        onClose={() => {
+          setResourceFormOpen(false);
+          setEditingResource(null);
+        }}
+        onSave={handleSaveResource}
+        resource={editingResource}
       />
 
       <ConfirmDialog

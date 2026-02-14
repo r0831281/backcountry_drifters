@@ -8,6 +8,7 @@ import { Home } from './pages/Home';
 
 const About = lazy(() => import('./pages/About').then((module) => ({ default: module.About })));
 const Bookings = lazy(() => import('./pages/Bookings').then((module) => ({ default: module.Bookings })));
+const Resources = lazy(() => import('./pages/Resources').then((module) => ({ default: module.Resources })));
 const Login = lazy(() => import('./pages/Login').then((module) => ({ default: module.Login })));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard').then((module) => ({ default: module.AdminDashboard })));
 
@@ -33,6 +34,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/bookings" element={<Bookings />} />
+                <Route path="/resources" element={<Resources />} />
                 <Route path="/login" element={<Login />} />
 
                 {/* Protected Routes - Admin Only */}
