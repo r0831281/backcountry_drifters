@@ -1,9 +1,16 @@
 import { Timestamp } from 'firebase/firestore';
 
 /**
- * Resource category types
+ * Resource category interface - for dynamic category management
  */
-export type ResourceCategory = 'gear' | 'hatch-charts' | 'techniques' | 'locations' | 'other';
+export interface ResourceCategory {
+  id: string;
+  name: string;
+  label: string;
+  order: number;
+  createdAt: Timestamp;
+  updatedAt?: Timestamp;
+}
 
 /**
  * Resource interface - represents a resource item (gear guide, hatch chart, etc.)
@@ -12,8 +19,8 @@ export interface Resource {
   id: string;
   title: string;
   text: string;
-  imageUrl: string;
-  category: ResourceCategory;
+  imageUrl?: string;
+  category: string;
   isVisible: boolean;
   createdAt: Timestamp;
   updatedAt?: Timestamp;
@@ -25,8 +32,8 @@ export interface Resource {
 export interface ResourceFormData {
   title: string;
   text: string;
-  imageUrl: string;
-  category: ResourceCategory;
+  imageUrl?: string;
+  category: string;
   isVisible: boolean;
 }
 
@@ -39,3 +46,12 @@ export interface CreateResourceData extends Omit<Resource, 'id' | 'createdAt' | 
  * Data that can be updated on an existing resource
  */
 export interface UpdateResourceData extends Partial<Omit<Resource, 'id' | 'createdAt' | 'updatedAt'>> {}
+
+/**
+ * Form data for creating/editing a resource category
+ */
+export interface ResourceCategoryFormData {
+  name: string;
+  label: string;
+  order: number;
+}

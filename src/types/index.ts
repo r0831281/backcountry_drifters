@@ -15,4 +15,4 @@ export type {
   FilterMode
 } from './filters';
 export { DEFAULT_TRIP_FILTERS, DEFAULT_BOOKING_FILTERS } from './filters';
-export type { Resource, ResourceFormData, CreateResourceData, UpdateResourceData, ResourceCategory } from './resource';
+export type { Resource, ResourceFormData, CreateResourceData, UpdateResourceData, ResourceCategory, ResourceCategoryFormData } from './resource';

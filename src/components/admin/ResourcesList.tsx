@@ -1,5 +1,7 @@
-import { type Resource, type ResourceCategory } from '../../types';
+import { useMemo } from 'react';
+import { type Resource } from '../../types';
 import { Button, Card } from '../ui';
+import { useResourceCategories } from '../../hooks';
 
 interface ResourcesListProps {
   resources: Resource[];
@@ -37,15 +39,28 @@ function truncateText(text: string, maxLength: number): string {
 }
 
 /** Get category label from value */
-function getCategoryLabel(category: ResourceCategory): string {
-  const labels: Record<ResourceCategory, string> = {
-    'gear': 'Ideal Gear',
-    'hatch-charts': 'Hatch Charts',
-    'techniques': 'Techniques',
-    'locations': 'Locations',
-    'other': 'Other',
-  };
-  return labels[category] || category;
+function getCategoryLabel(category: string, categoryMap: Map<string, string>): string {
+  return categoryMap.get(category) || category;
+}
+
+/** Get category color - using a hash to generate consistent colors */
+function getCategoryColor(category: string): string {
+  // Generate a consistent color based on category name hash
+  let hash = 0;
+  for (let i = 0; i < category.length; i++) {
+    hash = category.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  
+  const colors = [
+    'bg-blue-100 text-blue-800',
+    'bg-green-100 text-green-800',
+    'bg-purple-100 text-purple-800',
+    'bg-orange-100 text-orange-800',
+    'bg-pink-100 text-pink-800',
+    'bg-indigo-100 text-indigo-800',
+  ];
+  
+  return colors[Math.abs(hash) % colors.length];
 }
 
 export function ResourcesList({
@@ -61,6 +76,16 @@ export function ResourcesList({
   onToggleVisibility,
   onPageChange,
 }: ResourcesListProps) {
+  // Load categories for label mapping
+  const { categories } = useResourceCategories();
+  
+  // Create category map for labels
+  const categoryMap = useMemo(() => {
+    const map = new Map<string, string>();
+    categories.forEach(cat => map.set(cat.name, cat.label));
+    return map;
+  }, [categories]);
+
   if (loading) {
     return (
       <div className="space-y-4">
@@ -146,12 +171,18 @@ export function ResourcesList({
                 {resources.map((resource) => (
                   <tr key={resource.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-100">
-                        <img
-                          src={resource.imageUrl}
-                          alt={resource.title}
-                          className="w-full h-full object-cover"
-                        />
+                      <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
+                        {resource.imageUrl ? (
+                          <img
+                            src={resource.imageUrl}
+                            alt={resource.title}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <svg className="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                        )}
                       </div>
                     </td>
                     <td className="px-6 py-4">
@@ -161,8 +192,8 @@ export function ResourcesList({
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-forest-100 text-forest-800">
-                        {getCategoryLabel(resource.category)}
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getCategoryColor(resource.category)}`}>
+                        {getCategoryLabel(resource.category, categoryMap)}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -230,12 +261,18 @@ export function ResourcesList({
               <Card key={resource.id} className="p-4">
                 <div className="flex gap-4">
                   <div className="flex-shrink-0">
-                    <div className="w-20 h-20 rounded-lg overflow-hidden bg-gray-100">
-                      <img
-                        src={resource.imageUrl}
-                        alt={resource.title}
-                        className="w-full h-full object-cover"
-                      />
+                    <div className="w-20 h-20 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
+                      {resource.imageUrl ? (
+                        <img
+                          src={resource.imageUrl}
+                          alt={resource.title}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <svg className="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                      )}
                     </div>
                   </div>
                   <div className="flex-1 min-w-0">
@@ -246,8 +283,8 @@ export function ResourcesList({
                       {truncateText(resource.text, 60)}
                     </p>
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-forest-100 text-forest-800">
-                        {getCategoryLabel(resource.category)}
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${getCategoryColor(resource.category)}`}>
+                        {getCategoryLabel(resource.category, categoryMap)}
                       </span>
                       <span
                         className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${

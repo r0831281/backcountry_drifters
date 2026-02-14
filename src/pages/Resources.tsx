@@ -1,60 +1,51 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { PageContainer, PageHeader } from '../components/layout';
 import { Card, CardContent, Skeleton } from '../components/ui';
-import { useResources } from '../hooks';
-import { type Resource, type ResourceCategory } from '../types';
+import { useResources, useResourceCategories } from '../hooks';
+import { type Resource } from '../types';
 
-/** Get category label from value */
-function getCategoryLabel(category: ResourceCategory): string {
-  const labels: Record<ResourceCategory, string> = {
-    'gear': 'Ideal Gear',
-    'hatch-charts': 'Hatch Charts',
-    'techniques': 'Techniques',
-    'locations': 'Locations',
-    'other': 'Other',
-  };
-  return labels[category] || category;
+/** Get category color - using a hash to generate consistent colors */
+function getCategoryColor(category: string): string {
+  // Generate a consistent color based on category name hash
+  let hash = 0;
+  for (let i = 0; i < category.length; i++) {
+    hash = category.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  
+  const colors = [
+    'bg-blue-100 text-blue-800',
+    'bg-green-100 text-green-800',
+    'bg-purple-100 text-purple-800',
+    'bg-orange-100 text-orange-800',
+    'bg-pink-100 text-pink-800',
+    'bg-indigo-100 text-indigo-800',
+    'bg-teal-100 text-teal-800',
+    'bg-red-100 text-red-800',
+  ];
+  
+  return colors[Math.abs(hash) % colors.length];
 }
 
-/** Get category color from value */
-function getCategoryColor(category: ResourceCategory): string {
-  const colors: Record<ResourceCategory, string> = {
-    'gear': 'bg-blue-100 text-blue-800',
-    'hatch-charts': 'bg-green-100 text-green-800',
-    'techniques': 'bg-purple-100 text-purple-800',
-    'locations': 'bg-orange-100 text-orange-800',
-    'other': 'bg-gray-100 text-gray-800',
-  };
-  return colors[category] || colors.other;
-}
-
-const CATEGORY_FILTERS: Array<{ value: ResourceCategory | 'all'; label: string }> = [
-  { value: 'all', label: 'All Resources' },
-  { value: 'gear', label: 'Ideal Gear' },
-  { value: 'hatch-charts', label: 'Hatch Charts' },
-  { value: 'techniques', label: 'Techniques' },
-  { value: 'locations', label: 'Locations' },
-  { value: 'other', label: 'Other' },
-];
-
-function ResourceCard({ resource }: { resource: Resource }) {
+function ResourceCard({ resource, categoryLabel }: { resource: Resource; categoryLabel: string }) {
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 h-full flex flex-col">
-      {/* Image */}
-      <div className="aspect-video overflow-hidden bg-gray-100">
-        <img
-          src={resource.imageUrl}
-          alt={resource.title}
-          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-        />
-      </div>
+      {/* Image - only show if available */}
+      {resource.imageUrl && (
+        <div className="aspect-video overflow-hidden bg-gray-100">
+          <img
+            src={resource.imageUrl}
+            alt={resource.title}
+            className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+          />
+        </div>
+      )}
 
       {/* Content */}
       <CardContent className="flex-1 flex flex-col">
         {/* Category Badge */}
         <div className="mb-3">
           <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getCategoryColor(resource.category)}`}>
-            {getCategoryLabel(resource.category)}
+            {categoryLabel}
           </span>
         </div>
 
@@ -124,7 +115,15 @@ function EmptyState() {
 
 export function Resources() {
   const { resources, loading } = useResources({ includeHidden: false, limitCount: 100 });
-  const [selectedCategory, setSelectedCategory] = useState<ResourceCategory | 'all'>('all');
+  const { categories, loading: categoriesLoading } = useResourceCategories();
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+
+  // Create category map for labels
+  const categoryMap = useMemo(() => {
+    const map = new Map<string, string>();
+    categories.forEach(cat => map.set(cat.name, cat.label));
+    return map;
+  }, [categories]);
 
   // Filter resources by category
   const filteredResources = selectedCategory === 'all'
@@ -141,20 +140,33 @@ export function Resources() {
       {/* Category Filter */}
       <div className="mb-8">
         <div className="flex flex-wrap gap-3">
-          {CATEGORY_FILTERS.map((filter) => (
+          <button
+            onClick={() => setSelectedCategory('all')}
+            className={`
+              px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200
+              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-trout-gold focus-visible:ring-offset-2
+              ${selectedCategory === 'all'
+                ? 'bg-forest-600 text-white shadow-md'
+                : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+              }
+            `}
+          >
+            All Resources
+          </button>
+          {categories.map((category) => (
             <button
-              key={filter.value}
-              onClick={() => setSelectedCategory(filter.value)}
+              key={category.id}
+              onClick={() => setSelectedCategory(category.name)}
               className={`
                 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200
                 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-trout-gold focus-visible:ring-offset-2
-                ${selectedCategory === filter.value
+                ${selectedCategory === category.name
                   ? 'bg-forest-600 text-white shadow-md'
                   : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
                 }
               `}
             >
-              {filter.label}
+              {category.label}
             </button>
           ))}
         </div>
@@ -164,19 +176,23 @@ export function Resources() {
       {!loading && filteredResources.length > 0 && (
         <div className="mb-6 text-sm text-gray-600">
           Showing {filteredResources.length} {filteredResources.length === 1 ? 'resource' : 'resources'}
-          {selectedCategory !== 'all' && ` in ${getCategoryLabel(selectedCategory)}`}
+          {selectedCategory !== 'all' && ` in ${categoryMap.get(selectedCategory) || selectedCategory}`}
         </div>
       )}
 
       {/* Resources Grid */}
-      {loading ? (
+      {loading || categoriesLoading ? (
         <ResourcesLoading />
       ) : filteredResources.length === 0 ? (
         <EmptyState />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredResources.map((resource) => (
-            <ResourceCard key={resource.id} resource={resource} />
+            <ResourceCard 
+              key={resource.id} 
+              resource={resource}
+              categoryLabel={categoryMap.get(resource.category) || resource.category}
+            />
           ))}
         </div>
       )}

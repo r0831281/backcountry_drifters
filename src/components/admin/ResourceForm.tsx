@@ -1,11 +1,12 @@
 import { useState, useCallback, useEffect } from 'react';
-import { type Resource, type ResourceFormData, type ResourceCategory } from '../../types';
+import { type Resource, type ResourceFormData } from '../../types';
 import { Modal, ModalFooter } from '../ui/Modal';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { Textarea } from '../ui/Textarea';
 import { ImageUpload } from '../ui/ImageUpload';
 import { sanitizeText, warnIfSuspicious } from '../../lib/sanitization';
+import { useResourceCategories } from '../../hooks';
 
 interface ResourceFormProps {
   isOpen: boolean;
@@ -21,19 +22,11 @@ interface FormErrors {
   category?: string;
 }
 
-const CATEGORY_OPTIONS: { value: ResourceCategory; label: string }[] = [
-  { value: 'gear', label: 'Ideal Gear' },
-  { value: 'hatch-charts', label: 'Hatch Charts' },
-  { value: 'techniques', label: 'Techniques' },
-  { value: 'locations', label: 'Locations' },
-  { value: 'other', label: 'Other' },
-];
-
 const EMPTY_FORM: ResourceFormData = {
   title: '',
   text: '',
   imageUrl: '',
-  category: 'gear',
+  category: '',
   isVisible: true,
 };
 
@@ -43,6 +36,9 @@ export function ResourceForm({ isOpen, onClose, onSave, resource }: ResourceForm
   const [errors, setErrors] = useState<FormErrors>({});
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  
+  // Load resource categories
+  const { categories, loading: categoriesLoading } = useResourceCategories({ realtime: true });
 
   // Reset form when modal opens/closes or resource changes
   useEffect(() => {
@@ -51,17 +47,19 @@ export function ResourceForm({ isOpen, onClose, onSave, resource }: ResourceForm
         setFormData({
           title: resource.title,
           text: resource.text,
-          imageUrl: resource.imageUrl,
+          imageUrl: resource.imageUrl || '',
           category: resource.category,
           isVisible: resource.isVisible,
         });
       } else {
-        setFormData(EMPTY_FORM);
+        // Set default category to first available category
+        const defaultCategory = categories.length > 0 ? categories[0].name : '';
+        setFormData({ ...EMPTY_FORM, category: defaultCategory });
       }
       setErrors({});
       setSaveError(null);
     }
-  }, [isOpen, resource]);
+  }, [isOpen, resource, categories]);
 
   const updateField = useCallback(<K extends keyof ResourceFormData>(
     field: K,
@@ -104,9 +102,12 @@ export function ResourceForm({ isOpen, onClose, onSave, resource }: ResourceForm
     }
     warnIfSuspicious('text', text);
 
-    // Image validation
-    if (!formData.imageUrl) {
-      newErrors.imageUrl = 'Image is required';
+    // Image validation - now optional
+    // No validation needed since it's optional
+
+    // Category validation
+    if (!formData.category) {
+      newErrors.category = 'Category is required';
     }
 
     setErrors(newErrors);
@@ -173,19 +174,34 @@ export function ResourceForm({ isOpen, onClose, onSave, resource }: ResourceForm
             <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
               Category <span className="text-red-500">*</span>
             </label>
-            <select
-              id="category"
-              value={formData.category}
-              onChange={(e) => updateField('category', e.target.value as ResourceCategory)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-trout-gold focus:border-transparent"
-              required
-            >
-              {CATEGORY_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+            {categoriesLoading ? (
+              <div className="w-full px-4 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-500">
+                Loading categories...
+              </div>
+            ) : categories.length === 0 ? (
+              <div className="w-full px-4 py-2 border border-yellow-300 rounded-md bg-yellow-50 text-yellow-700 text-sm">
+                No categories available. Please add categories in the admin settings first.
+              </div>
+            ) : (
+              <select
+                id="category"
+                value={formData.category}
+                onChange={(e) => updateField('category', e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-trout-gold focus:border-transparent"
+                required
+                disabled={categoriesLoading}
+              >
+                <option value="">Select a category</option>
+                {categories.map((cat) => (
+                  <option key={cat.id} value={cat.name}>
+                    {cat.label}
+                  </option>
+                ))}
+              </select>
+            )}
+            {errors.category && (
+              <p className="mt-1 text-sm text-red-600">{errors.category}</p>
+            )}
           </div>
 
           {/* Content Textarea */}
@@ -205,16 +221,16 @@ export function ResourceForm({ isOpen, onClose, onSave, resource }: ResourceForm
             </div>
           </div>
 
-          {/* Image Upload */}
+          {/* Image Upload - now optional */}
           <div>
             <ImageUpload
-              label="Resource Image"
-              value={formData.imageUrl}
+              label="Resource Image (Optional)"
+              value={formData.imageUrl || ''}
               onChange={(url) => updateField('imageUrl', url || '')}
               storagePath="resources"
               helperText="Upload an image related to this resource (max 5MB, JPEG/PNG/WebP)"
               error={errors.imageUrl}
-              required
+              required={false}
             />
           </div>
 

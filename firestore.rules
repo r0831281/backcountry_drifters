@@ -226,9 +226,9 @@ service cloud.firestore {
         && noScriptTags(request.resource.data.title)
         && isValidString(request.resource.data.text, 10, 10000)
         && noScriptTags(request.resource.data.text)
-        && isValidUrl(request.resource.data.imageUrl)
-        && request.resource.data.category is string
-        && request.resource.data.category in ['gear', 'hatch-charts', 'techniques', 'locations', 'other']
+        && (!('imageUrl' in request.resource.data) || request.resource.data.imageUrl == null || request.resource.data.imageUrl == '' || isValidUrl(request.resource.data.imageUrl))
+        && isNonEmptyString(request.resource.data.category)
+        && request.resource.data.category.size() <= 100
         && request.resource.data.isVisible is bool;
 
       allow update: if isAdmin()
@@ -236,11 +236,34 @@ service cloud.firestore {
         && noScriptTags(request.resource.data.title)
         && isValidString(request.resource.data.text, 10, 10000)
         && noScriptTags(request.resource.data.text)
-        && isValidUrl(request.resource.data.imageUrl)
-        && request.resource.data.category is string
-        && request.resource.data.category in ['gear', 'hatch-charts', 'techniques', 'locations', 'other']
+        && (!('imageUrl' in request.resource.data) || request.resource.data.imageUrl == null || request.resource.data.imageUrl == '' || isValidUrl(request.resource.data.imageUrl))
+        && isNonEmptyString(request.resource.data.category)
+        && request.resource.data.category.size() <= 100
         && request.resource.data.isVisible is bool;
 
+      allow delete: if isAdmin();
+    }
+
+    // Resource Categories - admin can manage, public can read
+    match /resourceCategories/{categoryId} {
+      allow read: if true;
+      
+      allow create: if isAdmin()
+        && isValidString(request.resource.data.name, 1, 100)
+        && noScriptTags(request.resource.data.name)
+        && isValidString(request.resource.data.label, 1, 100)
+        && noScriptTags(request.resource.data.label)
+        && request.resource.data.order is number
+        && request.resource.data.order >= 0;
+      
+      allow update: if isAdmin()
+        && isValidString(request.resource.data.name, 1, 100)
+        && noScriptTags(request.resource.data.name)
+        && isValidString(request.resource.data.label, 1, 100)
+        && noScriptTags(request.resource.data.label)
+        && request.resource.data.order is number
+        && request.resource.data.order >= 0;
+      
       allow delete: if isAdmin();
     }
   }
