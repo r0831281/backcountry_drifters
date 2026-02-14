@@ -137,7 +137,7 @@ export function About() {
           >
             <div className="relative">
               <div className="bg-gradient-to-br from-forest-100 to-forest-200 rounded-2xl h-96 md:h-[28rem] flex items-center justify-center overflow-hidden">
-                <img src="public/bjron_guidepic.jpg" alt="Backcountry Drifters Guide" className="w-full h-full object-cover" />
+                <img src="/bjorn_guidepic.jpg" alt="Backcountry Drifters Guide" className="w-full h-full object-cover" />
               </div>
               {/* Decorative corner accent */}
               <div className="absolute -bottom-3 -right-3 w-24 h-24 border-2 border-trout-gold/20 rounded-2xl" aria-hidden="true" />
