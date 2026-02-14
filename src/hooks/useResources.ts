@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { collection, query, where, orderBy, limit, onSnapshot, getDocs } from 'firebase/firestore';
+import { collection, query, orderBy, limit, onSnapshot, getDocs } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { COLLECTIONS, createDocument, updateDocument, deleteDocument } from '../lib/firestore';
 import { type Resource, type CreateResourceData, type UpdateResourceData } from '../types';
