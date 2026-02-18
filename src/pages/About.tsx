@@ -41,22 +41,22 @@ const waters = [
   {
     name: 'Bow River',
     description:
-      'World-renowned for its blue-ribbon trout fishing, the Bow offers exceptional year-round opportunities for brown and rainbow trout.',
+      "World-renowned for its blue-ribbon trout fishing, the Bow offers exceptional year-round opportunities for brown and rainbow trout, Cutthroat, and CutBows.",
   },
   {
     name: 'Highwood River',
     description:
-      'A pristine foothill stream known for its scenic beauty and excellent dry fly fishing.',
+      "A pristine mountain river carving through eastern slopes of the Rockies working its way into the foothills before its confluence with the Bow river at the start of the prairies, the Highwood River boasts exceptional dry fly fishing and a healthy population of Bull trout, some reaching nearly 30 inches.",
   },
   {
-    name: 'Oldman River',
+    name: 'Oldman/Livingstone rivers',
     description:
-      'Remote sections offering solitude and challenging conditions for experienced anglers.',
+      "Remote sections offering solitude and challenging conditions for experienced anglers. Once again exceptional dry fly opportunities and some opportunity at larger bull trout on streamers.",
   },
   {
-    name: 'Private Waters',
+    name: 'Other Rivers',
     description:
-      'Access to exclusive spring creeks and private ranch waters for the ultimate fly fishing experience.',
+      "Interested in other rivers? Send us a message or give us a call!",
   },
 ];
 
@@ -64,12 +64,9 @@ const waters = [
 /* Certifications                                                      */
 /* ------------------------------------------------------------------ */
 const certifications = [
-  'Licensed Alberta Fishing Guide',
-  'Wilderness First Aid Certified',
-  'Member, Bow River Trout Foundation',
-  'Certified Fly Casting Instructor',
+  'CPR & First Aid certified',
   'Commercial Liability Insurance',
-  'Alberta Trout Unlimited Member',
+  'Angling Outfitter & Guide Association of Alberta member',
 ];
 
 /* ------------------------------------------------------------------ */
@@ -83,26 +80,21 @@ const tripSpecialties = [
     location: 'Bow River, Calgary and Southern Alberta',
     season: 'Prime season April-October',
   },
+  // Red Deer River Walk-and-Wade removed per customer request
   {
-    title: 'Red Deer River Walk-and-Wade',
+    title: 'Foothills walk and wade adventures',
     summary:
-      'Sight-fishing missions through the Red Deer badlands targeting aggressive browns with terrestrials, streamers, and technical dry flies.',
-    location: 'Red Deer River corridor',
-    season: 'Best mid-June through September',
-  },
-  {
-    title: 'Foothills Freestone Adventures',
-    summary:
-      'Custom itineraries on the Highwood, Oldman, and Livingstone Rivers that blend alpine hikes with patient instruction for dry fly and Euro nymph tactics.',
+      'Custom itineraries on the Highwood, Oldman, Livingstone, and other southern Alberta rivers, that blend southern Alberta beauty with the thrill of high mountain cutthroat and bull trout!',
     location: 'Southern Alberta foothills',
-    season: 'Late May through early October',
+    season: 'Mid June - End August',
   },
+  // Multi-Day Rockies Expeditions removed, replaced with below
   {
-    title: 'Multi-Day Rockies Expeditions',
+    title: 'Trip Options',
     summary:
-      'Fully planned Alberta fly fishing packages combining drift boat days, walk-and-wade exploration, camp catering, and conservation-focused education.',
-    location: 'Central and Southern Alberta service area',
-    season: 'Available May-October',
+      'We offer full and half day trips on the Bow River float trips and full day trips for Walk n wade adventures.',
+    location: 'Bow River & Southern Alberta',
+    season: 'Seasonal availability',
   },
 ];
 
@@ -138,9 +130,9 @@ export function About() {
             <div className="relative">
               <div className="bg-gradient-to-br from-forest-100 to-forest-200 rounded-2xl h-96 md:h-[28rem] flex items-center justify-center overflow-hidden">
                 <img src="/bjorn_guidepic.jpg" alt="Backcountry Drifters Guide" className="w-full h-full object-cover" />
+                {/* Decorative corner accent */}
+                <div className="absolute -bottom-3 -right-3 w-24 h-24 border-2 border-trout-gold/20 rounded-2xl" aria-hidden="true" />
               </div>
-              {/* Decorative corner accent */}
-              <div className="absolute -bottom-3 -right-3 w-24 h-24 border-2 border-trout-gold/20 rounded-2xl" aria-hidden="true" />
             </div>
           </div>
 
@@ -160,22 +152,13 @@ export function About() {
             </h2>
             <div className="space-y-4 text-gray-600 leading-relaxed">
               <p>
-                With over 15 years of professional guiding across the Bow River, Red Deer River,
-                and southern Alberta foothills, Backcountry Drifters delivers the region's most
-                intentional guided fly fishing experiences. Our small team is fully licensed,
-                insured, and singularly focused on creating safe, conservation-forward adventures.
+                With a decade of experience fishing on the Bow River, Sheep River, Highwood, Oldman, other southern Alberta rivers, and previous Big Game guide experience in the Yukon. Backcountry Drifters seeks to deliver intentional guided fly fishing experience tailored to your specific abilities on the river. Our team is fully insured and singularly focused on creating safe, conservation-forward adventures.
               </p>
               <p>
-                Born and raised in Calgary, our guides refined their craft rowing the Bow River,
-                stalking the Red Deer badlands, and hiking into the Highwood and Oldman systems.
-                That on-the-water time translates into precise reads on hatches, flows, and trout
-                behavior so every outing doubles as an immersive classroom.
+                About a decade ago our Head guide Bjorn, was introduced to drift boat trips on the Bow River by hiring some guides himself. After realizing how fun the trips were he quickly became obsessed with the need for his own boat. Building up from pontoon, to raft, to the ever popular and reliable CLACKACRAFT. This is our main vessel for float trips hosted by Bjorn himself. Years of on the water time and floating the Bow have translated into knowing seasonal flows, trout behaviors, safe water flows and knowing typical trout behavior throughout the season. This translates to great success on daily trips.
               </p>
               <p>
-                Whether you are casting for the first time or refining advanced streamer
-                presentations, our coaches pair patient instruction with premium gear,
-                seamless logistics, and an unwavering commitment to Alberta fisheries.
-                We are here to design the guided trip that matches your goals.
+                Whether you are casting for the first time or refining advanced streamer presentations, our coaches pair patient instruction with quality gear, seamless logistics, and an unwavering commitment to Alberta fisheries. We are here to design the guided trip that matches your goals.
               </p>
             </div>
             {/* Gold divider */}

@@ -400,10 +400,21 @@ export function BookingModal({ trip, isOpen, onClose }: BookingModalProps) {
                 name="preferredDate"
                 type="date"
                 value={formData.preferredDate}
-                onChange={handleChange}
+                onChange={e => {
+                  const value = e.target.value;
+                  // Only allow Fri (5), Sat (6), Sun (0), Mon (1)
+                  const day = value ? new Date(value).getDay() : null;
+                  if (day === 5 || day === 6 || day === 0 || day === 1 || !value) {
+                    handleChange(e);
+                  } else {
+                    // Optionally show error or ignore
+                    setErrors(prev => ({ ...prev, preferredDate: 'Please select a Friday, Saturday, Sunday, or Monday.' }));
+                  }
+                }}
                 required
                 min={new Date().toISOString().split('T')[0]}
                 error={errors.preferredDate}
+                helperText="Only Friday, Saturday, Sunday, and Monday are available."
               />
             </div>
 

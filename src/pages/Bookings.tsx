@@ -247,6 +247,19 @@ export function Bookings() {
           ))}
             </div>
           )}
+          {/* Call to action for other dates/locations */}
+          <div className="mt-8 flex justify-center items-center">
+            <p className="text-lg text-gray-700 text-center">
+              Looking for other dates or locations?{' '}
+              <a
+                href="mailto:backcountrydriftersflyfishing@gmail.com"
+                className="text-forest-700 font-semibold underline hover:text-forest-900"
+              >
+                Contact us to inquire
+              </a>
+              .
+            </p>
+          </div>
         </div>
       </div>
 
@@ -282,6 +295,8 @@ export function Bookings() {
           onClose={() => setSelectedTrip(null)}
         />
       )}
+
+    
     </PageContainer>
   );
 }
