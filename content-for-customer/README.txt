@@ -74,7 +74,7 @@ please reach out to your developer.
 CURRENT CONTACT INFORMATION ON THE WEBSITE
 -------------------------------------------
 Email: info@backcountrydrifters.com
-Phone: (403) 555-FISH
+Phone: 403 819 2870
 Location: Calgary, Alberta
 
 *** PLEASE VERIFY THESE DETAILS ARE CORRECT ***
