@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { FaInstagram } from 'react-icons/fa';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -97,6 +98,17 @@ export function Footer() {
                 >
                   403 819 2870
                 </a>
+              </li>
+              <li>
+                  <a
+                          href="https://www.instagram.com/backcountry_drifters/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="Instagram"
+                          className="hover:text-trout-gold transition-colors duration-200 text-xl"
+                        >
+                          <FaInstagram />
+                  </a>
               </li>
             </ul>
           </div>
