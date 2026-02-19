@@ -102,7 +102,16 @@ export function Home() {
           HERO SECTION
           Dramatic gradient background with premium typography
           ============================================================ */}
-      <section className="hero-critical relative bg-gradient-to-br from-forest-700 via-forest-600 to-forest-800 text-white overflow-hidden">
+      <section
+        className="hero-critical relative bg-gradient-to-br from-forest-700 via-forest-600 to-forest-800 text-white overflow-hidden"
+        style={{
+          backgroundImage: `url('/hero.jpg')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
+        {/* Overlay for readability */}
+        <div className="absolute inset-0 bg-gradient-to-br from-forest-700/80 via-forest-600/70 to-forest-800/80" aria-hidden="true" />
 
         {/* Decorative circles */}
         <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-trout-gold/5 blur-3xl" aria-hidden="true" />
