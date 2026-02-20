@@ -10,24 +10,21 @@ import { useScrollReveal, useStaggerReveal, useTestimonials } from '../hooks';
 const features = [
   {
     title: 'Expert Knowledge',
-    description:
-      'Licensed Alberta fly fishing guides with decades on the Bow, Red Deer, and foothill rivers.',
+    description: 'Fly fishing guides with years of experience fishing on the Bow river and other Alberta rivers.',
     icon: (
       <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
     ),
   },
   {
     title: 'Premium Equipment',
-    description:
-      'All top-quality rods, reels, waders, and flies provided for your comfort and success.',
+    description: 'Quality rods, reels, flies and gear provided for your best chance at success (if you have your own feel free to bring it)',
     icon: (
       <path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
     ),
   },
   {
     title: 'Personalized Service',
-    description:
-      'Small groups and private trips tailored to your Alberta itinerary, skill level, and target species.',
+    description: 'Trips can be tailored to your specific needs. Inquire about groups and rates. Rates are generally per boat/guide.',
     icon: (
       <path d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
     ),
@@ -51,19 +48,7 @@ const signatureTrips = [
     cta: 'Plan a Bow River Drift',
   },
   {
-    title: 'Red Deer River Sight-Fishing',
-    area: 'Red Deer River - Badlands Region',
-    description:
-      'Technical walk-and-wade or raft-supported days stalking aggressive browns in sight-fishing runs through the central Alberta badlands.',
-    highlights: [
-      'Terrestrial and streamer focused mid-summer',
-      'Great for intermediate and advanced casters',
-      'Unique sandstone canyon scenery',
-    ],
-    cta: 'Book Red Deer River Day',
-  },
-  {
-    title: 'Foothills Walk-&-Wade Adventures',
+    title: 'Foothills Walk-n-Wade Adventures',
     area: 'Highwood / Oldman / Livingstone Rivers',
     description:
       'Immersive Alberta Rockies experiences exploring clear freestone streams with patient instruction for dry-fly, Euro-nymph, and tight-line tactics.',
@@ -72,7 +57,7 @@ const signatureTrips = [
       'Perfect for anglers who love to hike and explore',
       'Custom itineraries for single or multi-day packages',
     ],
-    cta: 'Design a Foothills Trip',
+    cta: 'Plan a Foothills Trip',
   },
 ];
 
@@ -80,10 +65,9 @@ const signatureTrips = [
 /* Stat counters shown below the hero                                 */
 /* ------------------------------------------------------------------ */
 const stats = [
-  { value: '15+', label: 'Years Guiding Alberta Waters' },
-  { value: '250+', label: 'Guided River Days Each Season' },
-  { value: '4.9', label: 'Average Guest Review Score' },
-  { value: '12', label: 'Premier Trout Waters Accessed' },
+  { value: '10+', label: 'Years fly fishing experience on southern Albertas waters' },
+  { value: '200', label: 'Average wild trout per kilometer in Alberta’s top rivers'},
+  { value: '18-19"', label: 'Average wild trout size in Alberta rivers (inches)' },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -130,14 +114,11 @@ export function Home() {
               <span className="inline-block p-3 m-1 px-2 rounded-[2.25rem] bg-gradient-to-r from-forest-950/60 via-forest-900/25 to-transparent text-forest-50/95 shadow-[0_20px_45px_rgba(0,0,0,0.35)] backdrop-blur-sm">
                 Alberta Guided Fly Fishing Adventures
               </span>
-              <span className="block text-trout-gold/90 mt-2" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.35), 0 4px 8px rgba(0,0,0,0.25)' }}>Drift & walk-and-wade trips on Bow, Red Deer, and foothill rivers</span>
+              <span className="block text-trout-gold/90 mt-2" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.35), 0 4px 8px rgba(0,0,0,0.25)' }}>Drift Boat and Walk&#8209;and&#8209;Wade packages on the Bow river and southern Alberta mountain streams</span>
             </h1>
 
             <p className="hero-critical__subtitle text-lg md:text-xl text-forest-100/90 mb-10 max-w-2xl leading-relaxed animate-fade-in" style={{ animationDelay: '0.2s' }}>
-              Backcountry Drifters is a licensed Alberta fly fishing guide service based near Calgary.
-              We design Bow River drift boat floats, Red Deer River sight-fishing missions, and custom
-              foothills walk-and-wade days for every angler. Book a fully-outfitted guided trip and
-              experience the most scenic trout water in Western Canada.
+              Backcountry Drifters is based in the Foothills of Alberta, near Calgary. We focus on providing top notch Bow River Drift boat trips, with trips tailored to your wants and needs. We also provide Walk&#8209;and&#8209;Wade trips for anglers who have basic casting skills under their belts. Book a full Guided trip to some of the most scenic waters western Canada has to offer.
             </p>
 
             <div className="hero-critical__actions flex flex-col sm:flex-row gap-4 animate-fade-in" style={{ animationDelay: '0.4s' }}>
@@ -170,14 +151,17 @@ export function Home() {
       <section className="relative -mt-8 z-10" aria-label="Key statistics">
         <div className="container-custom">
           <div className="bg-white rounded-2xl shadow-large px-6 py-8 md:px-12 md:py-10">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 gap-8 md:gap-4 justify-between items-stretch">
               {stats.map((stat) => (
-                <div key={stat.label} className="text-center">
-                  <div className="text-2xl md:text-3xl font-bold text-forest-700">
-                    {stat.value}
-                  </div>
-                  <div className="text-sm text-gray-500 mt-1 font-medium">
-                    {stat.label}
+                <div key={stat.label} className="flex flex-col items-center text-center h-full">
+                  {stat.value && (
+                    <div className="text-2xl md:text-3xl font-bold text-forest-700 mb-2">
+                      {stat.value}
+                    </div>
+                  )}
+                  <div className={`text-sm text-gray-500 font-medium flex items-center justify-center ${stat.value ? '' : 'mt-2'}`}
+                  >
+                    <span>{stat.label}</span>
                   </div>
                 </div>
               ))}
@@ -197,7 +181,7 @@ export function Home() {
               Why Choose Backcountry Drifters
             </h2>
             <p className="text-gray-500 text-lg max-w-2xl mx-auto">
-              Expert Alberta fly fishing guides, premium equipment, and unforgettable drift boat and walk-and-wade experiences.
+              Expert Alberta fly fishing guides, premium equipment, and unforgettable drift boat and walk&#8209;and&#8209;wade experiences.
             </p>
             <div className="mt-5 mx-auto w-12 h-0.5 bg-trout-gold rounded-full" aria-hidden="true" />
           </div>
@@ -253,14 +237,13 @@ export function Home() {
             <h2 id="signature-trips-heading" className="text-3xl md:text-4xl font-bold text-forest-800 mb-4">
               Signature Alberta Guided Trips
             </h2>
-            <p className="text-gray-600 text-lg max-w-3xl mx-auto">
-              Choose from Bow River drift boat adventures, Red Deer River sight-fishing, or foothills walk-and-wade journeys.
-              Each guided fly fishing trip includes transportation on the water, premium rods and reels, hand-tied flies, and expert instruction.
+            <p className="text-gray-600 text-lg max-w-3xl mx-auto ">
+             Choose from the Bow river drift boat adventures, to treks through mountain streams walk&#8209;and&#8209;wading through some crystal clear waters.
             </p>
             <div className="mt-5 mx-auto w-12 h-0.5 bg-trout-gold rounded-full" aria-hidden="true" />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
             {signatureTrips.map((trip) => (
               <article
                 key={trip.title}
@@ -395,7 +378,7 @@ export function Home() {
             Ready to Book an Alberta Fly Fishing Guide?
           </h2>
           <p className="text-lg text-white/90 text-shadow-soft mb-10 max-w-2xl mx-auto leading-relaxed">
-            Lock in your preferred dates for Bow River drift trips, Red Deer River walk-and-wade outings,
+            Lock in your preferred dates for Bow River drift trips, Red Deer River walk&#8209;and&#8209;wade outings,
             or fully customized foothills itineraries with Backcountry Drifters.
           </p>
           <Link to="/bookings">
