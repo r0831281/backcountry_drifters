@@ -66,8 +66,8 @@ const signatureTrips = [
 /* ------------------------------------------------------------------ */
 const stats = [
   { value: '10+', label: 'Years fly fishing experience on southern Albertas waters' },
-  { value: '200', label: 'Average wild trout per kilometer in Alberta’s top rivers'},
-  { value: '18-19"', label: 'Average wild trout size in Alberta rivers (inches)' },
+  { value: '2000', label: 'Average wild trout per kilometer in the Bow River'},
+  { value: '18-19"', label: 'Average wild trout size in the Bow River (inches)' },
 ];
 
 /* ------------------------------------------------------------------ */
