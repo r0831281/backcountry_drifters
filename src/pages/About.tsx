@@ -361,7 +361,7 @@ export function About() {
             ${certsReveal.isVisible ? 'is-visible' : ''}
           `}
         >
-          <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <ul className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {certifications.map((cert) => (
               <li key={cert} className="flex items-start gap-3">
                 <svg
