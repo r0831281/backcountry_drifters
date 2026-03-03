@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import type { Testimonial } from '../../types';
+import { Modal } from './Modal';
 
 /* ------------------------------------------------------------------ */
 /* Constants                                                           */
@@ -286,9 +287,11 @@ export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) 
 /* ------------------------------------------------------------------ */
 function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
   const [imageError, setImageError] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Show initials if no photo URL or if image fails to load
   const showInitials = !testimonial.photoUrl || imageError;
+  const isLongTestimonial = testimonial.testimonialText.trim().length > 220;
 
   return (
     <article
@@ -332,9 +335,27 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
 
       {/* Testimonial text -- tighter line-height on mobile for compact cards */}
       <blockquote className="flex-1 mb-3 sm:mb-6">
-        <p className="text-gray-600 leading-snug sm:leading-relaxed text-[0.8125rem] sm:text-[0.95rem]">
+        <p
+          className="text-gray-600 leading-snug sm:leading-relaxed text-[0.8125rem] sm:text-[0.95rem]"
+          style={{
+            display: '-webkit-box',
+            WebkitLineClamp: 4,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+          }}
+        >
           &ldquo;{testimonial.testimonialText}&rdquo;
         </p>
+        {isLongTestimonial && (
+          <button
+            type="button"
+            onClick={() => setIsModalOpen(true)}
+            className="mt-2 text-xs sm:text-sm font-semibold text-forest-700 hover:text-forest-900 transition-colors"
+            aria-label="Open full testimonial"
+          >
+            Show more
+          </button>
+        )}
       </blockquote>
 
       {/* Customer info footer -- tighter spacing on mobile */}
@@ -371,6 +392,22 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
           </span>
         </div>
       </footer>
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title={`${testimonial.customerName} — Testimonial`}
+        maxWidth="lg"
+      >
+        <blockquote className="space-y-3">
+          <p className="text-gray-700 leading-relaxed text-sm sm:text-base">
+            &ldquo;{testimonial.testimonialText}&rdquo;
+          </p>
+          <p className="text-xs sm:text-sm text-gray-500">
+            {testimonial.tripType}
+          </p>
+        </blockquote>
+      </Modal>
     </article>
   );
 }

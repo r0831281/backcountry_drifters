@@ -48,7 +48,7 @@ const signatureTrips = [
     cta: 'Plan a Bow River Drift',
   },
   {
-    title: 'Foothills Walk-n-Wade Adventures',
+    title: 'Foothills Freestone Adventures',
     area: 'Highwood / Oldman / Livingstone Rivers',
     description:
       'Immersive Alberta Rockies experiences exploring clear freestone streams with patient instruction for dry-fly, Euro-nymph, and tight-line tactics.',
@@ -114,11 +114,11 @@ export function Home() {
               <span className="inline-block p-3 m-1 px-2 rounded-[2.25rem] bg-gradient-to-r from-forest-950/60 via-forest-900/25 to-transparent text-forest-50/95 shadow-[0_20px_45px_rgba(0,0,0,0.35)] backdrop-blur-sm">
                 Alberta Guided Fly Fishing Adventures
               </span>
-              <span className="block text-trout-gold/90 mt-2" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.35), 0 4px 8px rgba(0,0,0,0.25)' }}>Drift Boat and Walk&#8209;and&#8209;Wade packages on the Bow river and southern Alberta mountain streams</span>
+              <span className="block text-trout-gold/90 mt-2" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.35), 0 4px 8px rgba(0,0,0,0.25)' }}>Drift boat packages on the Bow River and southern Alberta mountain streams</span>
             </h1>
 
             <p className="hero-critical__subtitle text-lg md:text-xl text-forest-100/90 mb-10 max-w-2xl leading-relaxed animate-fade-in" style={{ animationDelay: '0.2s' }}>
-              Backcountry Drifters is based in the Foothills of Alberta, near Calgary. We focus on providing top notch Bow River Drift boat trips, with trips tailored to your wants and needs. We also provide Walk&#8209;and&#8209;Wade trips for anglers who have basic casting skills under their belts. Book a full Guided trip to some of the most scenic waters western Canada has to offer.
+              Backcountry Drifters is based in the Foothills of Alberta, near Calgary. We focus on providing top notch Bow River drift boat trips, with trips tailored to your wants and needs. We also provide guided foothills stream trips for anglers who have basic casting skills under their belts. Book a full guided trip to some of the most scenic waters western Canada has to offer.
             </p>
 
             <div className="hero-critical__actions flex flex-col sm:flex-row gap-4 animate-fade-in" style={{ animationDelay: '0.4s' }}>
@@ -181,7 +181,7 @@ export function Home() {
               Why Choose Backcountry Drifters
             </h2>
             <p className="text-gray-500 text-lg max-w-2xl mx-auto">
-              Expert Alberta fly fishing guides, premium equipment, and unforgettable drift boat and walk&#8209;and&#8209;wade experiences.
+              Expert Alberta fly fishing guides, premium equipment, and unforgettable drift boat and foothills stream experiences.
             </p>
             <div className="mt-5 mx-auto w-12 h-0.5 bg-trout-gold rounded-full" aria-hidden="true" />
           </div>
@@ -238,7 +238,7 @@ export function Home() {
               Signature Alberta Guided Trips
             </h2>
             <p className="text-gray-600 text-lg max-w-3xl mx-auto ">
-             Choose from the Bow river drift boat adventures, to treks through mountain streams walk&#8209;and&#8209;wading through some crystal clear waters.
+             Choose from Bow River drift boat adventures to guided mountain stream trips through some crystal clear waters.
             </p>
             <div className="mt-5 mx-auto w-12 h-0.5 bg-trout-gold rounded-full" aria-hidden="true" />
           </div>
@@ -378,7 +378,7 @@ export function Home() {
             Ready to Book an Alberta Fly Fishing Guide?
           </h2>
           <p className="text-lg text-white/90 text-shadow-soft mb-10 max-w-2xl mx-auto leading-relaxed">
-            Lock in your preferred dates for Bow River drift trips, Red Deer River walk&#8209;and&#8209;wade outings,
+            Lock in your preferred dates for Bow River drift trips, Red Deer River outings,
             or fully customized foothills itineraries with Backcountry Drifters.
           </p>
           <Link to="/bookings">

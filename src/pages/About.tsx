@@ -80,9 +80,9 @@ const tripSpecialties = [
     location: 'Bow River, Calgary and Southern Alberta',
     season: 'Prime season April-October',
   },
-  // Red Deer River Walk-and-Wade removed per customer request
+  // Red Deer River specialty removed per customer request
   {
-    title: 'Foothills walk and wade adventures',
+    title: 'Foothills Float Adventures',
     summary:
       'Custom itineraries on the Highwood, Oldman, Livingstone, and other southern Alberta rivers, that blend southern Alberta beauty with the thrill of high mountain cutthroat and bull trout!',
     location: 'Southern Alberta foothills',
@@ -92,7 +92,7 @@ const tripSpecialties = [
   {
     title: 'Trip Options',
     summary:
-      'We offer full and half day trips on the Bow River float trips and full day trips for Walk n wade adventures.',
+      'We offer full and half day trips on the Bow River float trips. We are also happy to customize trips to your goals and interests.',
     location: 'Bow River & Southern Alberta',
     season: 'Seasonal availability',
   },
@@ -111,7 +111,7 @@ export function About() {
     <PageContainer>
       <PageHeader
         title="About Backcountry Drifters Fly Fishing"
-        subtitle="Licensed Alberta fly fishing guides delivering Bow River drift trips, Red Deer River walk-and-wade days, and immersive instruction."
+        subtitle="Licensed Alberta fly fishing guides delivering Bow River drift trips, Red Deer River days, and immersive instruction."
       />
 
       {/* ============================================================
@@ -192,7 +192,7 @@ export function About() {
           <div className="mx-auto mt-5 w-12 h-0.5 bg-trout-gold rounded-full" aria-hidden="true" />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
           {tripSpecialties.map((specialty) => (
             <Card key={specialty.title} hover className="h-full">
               <CardContent>

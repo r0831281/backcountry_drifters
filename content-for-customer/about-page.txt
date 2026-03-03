@@ -7,7 +7,7 @@ Page Title:
 About Backcountry Drifters Fly Fishing
 
 Page Subtitle:
-Licensed Alberta fly fishing guides delivering Bow River drift trips, Red Deer River walk-and-wade days, and immersive instruction.
+Licensed Alberta fly fishing guides delivering Bow River drift trips, Red Deer River days, and immersive instruction.
 
 
 GUIDE BIO SECTION
@@ -43,7 +43,7 @@ Description: Iconic full-day floats covering 15-25 kilometers of blue-ribbon wat
 Location: Bow River, Calgary and Southern Alberta
 Season: Prime season April-October
 
-Specialty 2: Red Deer River Walk-and-Wade
+Specialty 2: Red Deer River Sight-Fishing
 Description: Sight-fishing missions through the Red Deer badlands targeting aggressive browns with terrestrials, streamers, and technical dry flies.
 Location: Red Deer River corridor
 Season: Best mid-June through September
@@ -54,7 +54,7 @@ Location: Southern Alberta foothills
 Season: Late May through early October
 
 Specialty 4: Multi-Day Rockies Expeditions
-Description: Fully planned Alberta fly fishing packages combining drift boat days, walk-and-wade exploration, camp catering, and conservation-focused education.
+Description: Fully planned Alberta fly fishing packages combining drift boat days, stream exploration, camp catering, and conservation-focused education.
 Location: Central and Southern Alberta service area
 Season: Available May-October
 
