@@ -82,12 +82,13 @@ const tripSpecialties = [
   },
   // Red Deer River specialty removed per customer request
   {
-    title: 'Foothills Float Adventures',
+    title: 'Foothills Adventures',
     summary:
       'Custom itineraries on the Highwood, Oldman, Livingstone, and other southern Alberta rivers, that blend southern Alberta beauty with the thrill of high mountain cutthroat and bull trout!',
     location: 'Southern Alberta foothills',
     season: 'Mid June - End August',
   },
+  
   // Multi-Day Rockies Expeditions removed, replaced with below
   {
     title: 'Trip Options',
