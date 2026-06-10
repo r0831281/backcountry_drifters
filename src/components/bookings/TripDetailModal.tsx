@@ -102,7 +102,6 @@ export function TripDetailModal({ trip, isOpen, onClose, onBookNow }: TripDetail
                 <div className="text-sm font-medium text-gray-500">Price</div>
                 <div className="text-gray-900">
                   <span className="text-xl font-bold text-forest-800">{formatPrice(trip.price)}</span>
-                  <span className="text-sm text-gray-500 ml-1">/person</span>
                 </div>
               </div>
             </div>

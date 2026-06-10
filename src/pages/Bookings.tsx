@@ -228,7 +228,6 @@ export function Bookings() {
                       <span className="text-2xl font-bold text-forest-800">
                         {formatPrice(trip.price)}
                       </span>
-                      <span className="text-sm text-gray-400 ml-1">/person</span>
                     </div>
                     <Button
                       variant="primary"
