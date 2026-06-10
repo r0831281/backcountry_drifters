@@ -210,7 +210,7 @@ export function TripForm({ isOpen, onClose, onSave, trip }: TripFormProps) {
             />
 
             <Input
-              label="Price (USD)"
+              label="Price (CAD)"
               placeholder="e.g., 350.00"
               value={priceDisplay}
               onChange={(e) => handlePriceChange(e.target.value)}
